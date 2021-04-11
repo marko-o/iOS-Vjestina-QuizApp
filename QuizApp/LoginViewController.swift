@@ -20,7 +20,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     private var emailFieldContainer: UIView!
     private var passwordField: UITextField!
     private var passwordFieldContainer: UIView!
-    private var showPasswordButton: UIButton!
+    private var togglePasswordButton: UIButton!
     private var submitButton: UIButton!
     private var errorLabel: UILabel!
     
@@ -99,6 +99,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         passwordFieldContainer.addSubview(passwordField)
         fieldContainer.addSubview(passwordFieldContainer)
         
+        togglePasswordButton = UIButton(type: .custom)
+        togglePasswordButton.setImage(UIImage(named: "round_visibility_white_18pt"), for: .normal)
+        togglePasswordButton.addTarget(self, action: #selector(self.togglePasswordVisibility(_:)), for: .touchUpInside)
+        // hidden until password field is not empty
+        togglePasswordButton.isHidden = true
+        passwordField.rightView = togglePasswordButton
+        // this is set to always, then we manually adjust the toggle button to hidden if field is empty
+        passwordField.rightViewMode = .always
+        
         submitButton = UIButton()
         submitButton.isEnabled = false
         submitButton.setTitle("Login", for: .normal)
@@ -131,8 +140,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         passwordField.font = UIFont(name: "SourceSansPro-Regular", size: inputFieldFontSize)
         passwordField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white] )
         passwordField.borderStyle = .none
-        passwordField.rightViewMode = .whileEditing
-        passwordField.rightView = showPasswordButton
+        
         passwordFieldContainer.layer.cornerRadius = inputFieldCornerRadius
         passwordFieldContainer.backgroundColor = colorInputField
         
@@ -274,6 +282,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             password = updatedString!
         }
         
+        // show/hide password visibility toggle
+        if password.isEmpty {
+            togglePasswordButton.isHidden = true
+        } else {
+            togglePasswordButton.isHidden = false
+        }
+        
+        // enable/disable login button
         if email.isEmpty || password.isEmpty {
             submitButton.isEnabled = false
             submitButton.alpha = disabledButtonOpacity
@@ -294,7 +310,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    //Submit button target
+    //Toggle password visibility button target
+    @objc func togglePasswordVisibility(_: UIButton) {
+        passwordField.togglePasswordVisibility()
+        
+        //change the toggle icon
+        if passwordField.isSecureTextEntry {
+            togglePasswordButton.setImage(UIImage(named: "round_visibility_white_18pt"), for: .normal)
+        } else {
+            togglePasswordButton.setImage(UIImage(named: "round_visibility_off_white_18pt"), for: .normal)
+        }
+    }
+    
+    //Login button target
     @objc func submit(_: UIButton) {
         if isValidEmail(string: email) {
             var status: LoginStatus!
@@ -315,4 +343,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
 
+}
+
+extension UITextField {
+    func togglePasswordVisibility() {
+        self.isSecureTextEntry.toggle()
+        
+        if let existingText = self.text, isSecureTextEntry {
+            text = nil
+            insertText(existingText)
+        }
+    }
 }
