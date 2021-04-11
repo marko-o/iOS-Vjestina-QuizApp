@@ -171,11 +171,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         passwordFieldContainerLeading.priority = UILayoutPriority(750)
         passwordFieldContainerTrailing.priority = UILayoutPriority(750)
         
-        let submitButtonContainerLeading =
+        let submitButtonLeading =
             submitButton.leadingAnchor.constraint(equalTo: fieldContainer.leadingAnchor, constant: 30)
-        let submitButtonContainerTrailing = submitButton.trailingAnchor.constraint(equalTo: fieldContainer.trailingAnchor, constant: -30)
-        submitButtonContainerLeading.priority = UILayoutPriority(750)
-        submitButtonContainerTrailing.priority = UILayoutPriority(750)
+        let submitButtonTrailing = submitButton.trailingAnchor.constraint(equalTo: fieldContainer.trailingAnchor, constant: -30)
+        submitButtonLeading.priority = UILayoutPriority(750)
+        submitButtonTrailing.priority = UILayoutPriority(750)
         
         
         NSLayoutConstraint.activate([
@@ -226,8 +226,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             passwordFieldContainer.bottomAnchor.constraint(equalTo: submitButton.topAnchor, constant: -fieldSpacing),
             
             
-            submitButtonContainerLeading,
-            submitButtonContainerTrailing,
+            submitButtonLeading,
+            submitButtonTrailing,
             submitButton.widthAnchor.constraint(lessThanOrEqualToConstant: inputFieldMaxWidth),
             submitButton.heightAnchor.constraint(equalToConstant: inputFieldHeight),
             submitButton.centerXAnchor.constraint(equalTo: fieldContainer.centerXAnchor),
