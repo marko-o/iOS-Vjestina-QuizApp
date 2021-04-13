@@ -63,6 +63,10 @@ class QuizzesViewController: UIViewController {
         return .lightContent
     }
     
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
     private func buildViews() {
         createViews()
         styleViews()
