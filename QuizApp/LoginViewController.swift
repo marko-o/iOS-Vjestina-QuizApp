@@ -129,8 +129,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         emailField.backgroundColor = UIColor(white: 0, alpha: 0)
         emailField.textColor = .white
-        emailField.font = UIFont(name: "SourceSansPro-Regular", size: 16.0)
-        emailField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white] )
+        emailField.font = UIFont(name: "SourceSansPro-SemiBold", size: 16.0)
+        let placeholderFont = UIFont(name: "SourceSansPro-Regular", size: 16.0)
+        emailField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: placeholderFont!] )
         emailField.borderStyle = .none
         emailFieldContainer.layer.cornerRadius = inputFieldCornerRadius
         emailFieldContainer.backgroundColor = colorInputField
