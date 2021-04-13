@@ -306,6 +306,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return .lightContent
     }
     
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
     func isValidEmail(string: String) -> Bool {
         //pattern validation code
         return true
