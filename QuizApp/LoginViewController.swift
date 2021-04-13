@@ -327,6 +327,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @objc func submit(_: UIButton) {
         if isValidEmail(string: email) {
             var status: LoginStatus!
+            email = email.trimmingCharacters(in: CharacterSet.newlines)
+            password = password.trimmingCharacters(in: CharacterSet.newlines)
             status = ds.login(email: email, password: password)
             print("\n-------- Login information --------")
             switch status {
@@ -338,8 +340,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             case .none:
                 print("noinfo")
             }
-            print("username: " + email)
-            print("password: " + password)
+            print("username: \"" + email + "\"")
+            print("password: \"" + password + "\"")
             print("--------------- END ---------------")
         }
     }
