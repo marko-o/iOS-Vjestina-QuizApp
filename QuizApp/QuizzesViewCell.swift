@@ -92,22 +92,11 @@ class QuizzesViewCell: UICollectionViewCell {
             li.transform = CGAffineTransform(rotationAngle: CGFloat(degrees * .pi/180));
         }
         
-        let bgTop = bg.topAnchor.constraint(equalTo: contentView.topAnchor)
-        let bgLeading = bg.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
-        let bgTrailing = bg.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        let bgBottom = bg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        
-        bgTop.priority = UILayoutPriority(750)
-        bgLeading.priority = UILayoutPriority(750)
-        bgTrailing.priority = UILayoutPriority(750)
-        bgBottom.priority = UILayoutPriority(750)
-        
         NSLayoutConstraint.activate([
-            bgTop,
-            bgLeading,
-            bgTrailing,
-            bgBottom,
-            bg.widthAnchor.constraint(lessThanOrEqualToConstant: 400),
+            bg.topAnchor.constraint(equalTo: contentView.topAnchor),
+            bg.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            bg.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bg.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
             thumbnail.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: 20),

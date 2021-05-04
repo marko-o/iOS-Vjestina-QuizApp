@@ -14,6 +14,7 @@
 		529B38E6261F8BD500266A6D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 529B38E5261F8BD500266A6D /* Assets.xcassets */; };
 		529B38E9261F8BD500266A6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 529B38E7261F8BD500266A6D /* LaunchScreen.storyboard */; };
 		529F5722261FCF1700418388 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529F5721261FCF1700418388 /* LoginViewController.swift */; };
+		52A7BB312641FCB500847FB7 /* CollectionDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7BB302641FCB500847FB7 /* CollectionDisplay.swift */; };
 		52AC91D92620A9DC001C8C81 /* SourceSansPro-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52AC91D72620A9DC001C8C81 /* SourceSansPro-SemiBold.ttf */; };
 		52AC91DA2620A9DC001C8C81 /* SourceSansPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52AC91D82620A9DC001C8C81 /* SourceSansPro-Regular.ttf */; };
 		52AC91DC2620AAAB001C8C81 /* SourceSansPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52AC91DB2620AAAB001C8C81 /* SourceSansPro-Bold.ttf */; };
@@ -39,6 +40,7 @@
 		529B38E8261F8BD500266A6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		529B38EA261F8BD500266A6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		529F5721261FCF1700418388 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		52A7BB302641FCB500847FB7 /* CollectionDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionDisplay.swift; sourceTree = "<group>"; };
 		52AC91D72620A9DC001C8C81 /* SourceSansPro-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-SemiBold.ttf"; sourceTree = "<group>"; };
 		52AC91D82620A9DC001C8C81 /* SourceSansPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Regular.ttf"; sourceTree = "<group>"; };
 		52AC91DB2620AAAB001C8C81 /* SourceSansPro-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Bold.ttf"; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				52AC920726210B03001C8C81 /* QuizzesViewController.swift */,
 				52AC9209262131A9001C8C81 /* QuizzesViewCell.swift */,
 				52800B752622629100C3B6DD /* QuizHeaderView.swift */,
+				52A7BB302641FCB500847FB7 /* CollectionDisplay.swift */,
 			);
 			path = QuizApp;
 			sourceTree = "<group>";
@@ -252,6 +255,7 @@
 			files = (
 				529F5722261FCF1700418388 /* LoginViewController.swift in Sources */,
 				52AC92042620CBC7001C8C81 /* LoginStatus.swift in Sources */,
+				52A7BB312641FCB500847FB7 /* CollectionDisplay.swift in Sources */,
 				52AC920A262131A9001C8C81 /* QuizzesViewCell.swift in Sources */,
 				529B38E1261F8BCB00266A6D /* ViewController.swift in Sources */,
 				52AC92022620CBC7001C8C81 /* QuizCategory.swift in Sources */,

@@ -41,6 +41,12 @@ class QuizzesViewController: UIViewController {
     private let colorButtonText = UIColor(red: 0.39, green: 0.16, blue: 0.87, alpha: 1.00)
     private let disabledButtonOpacity = CGFloat(0.60)
     
+    lazy var collectionViewFlowLayout : CustomCollectionViewFlowLayout = {
+        let layout = CustomCollectionViewFlowLayout(display: .list, containerWidth: self.view.bounds.width)
+        layout.headerReferenceSize = CGSize(width: 0, height: 56)
+        return layout
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -62,6 +68,17 @@ class QuizzesViewController: UIViewController {
         
         gradientLayer.frame = view.bounds
     }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        self.reloadCollectionViewLayout(self.view.bounds.size.width)
+    }
+
+    private func reloadCollectionViewLayout(_ width: CGFloat) {
+        self.collectionViewFlowLayout.containerWidth = width
+        self.collectionViewFlowLayout.display = self.view.traitCollection.horizontalSizeClass == .compact && self.view.traitCollection.verticalSizeClass == .regular ? CollectionDisplay.list : CollectionDisplay.grid(columns: 2)
+
+        }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -110,13 +127,9 @@ class QuizzesViewController: UIViewController {
         
         
         quizlistCollectionView = {
-            //try to subclass into QuizzesViewFlowLayout() for more responsive design on bigger screens
-            let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .vertical
-            layout.headerReferenceSize = CGSize(width: 0, height: 56)
             // sets to smallest needed size, not fixed size per section
             //layout.estimatedItemSize = QuizzesViewFlowLayout.automaticSize
-            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout)
             return collectionView
         }()
         quizlistCollectionView?.delegate = self
@@ -346,5 +359,57 @@ extension QuizzesViewController: UICollectionViewDelegate {
 extension QuizzesViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width - 40, height: 143)
+    }
+}
+
+
+class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    var display: CollectionDisplay = .list {
+        didSet {
+            if display != oldValue {
+                self.invalidateLayout()
+            }
+        }
+    }
+    
+    var containerWidth: CGFloat = 0.0 {
+        didSet {
+            if containerWidth != oldValue {
+                self.invalidateLayout()
+            }
+        }
+    }
+    
+    convenience init(display: CollectionDisplay, containerWidth: CGFloat) {
+        self.init()
+        
+        self.display = display
+        self.containerWidth = containerWidth
+        self.minimumLineSpacing = 10
+        self.minimumInteritemSpacing = 10
+        self.configLayout()
+    }
+    
+    func configLayout() {
+        switch display {
+        case .inline:
+            self.scrollDirection = .vertical
+            self.itemSize = CGSize(width: containerWidth, height: 143)
+        
+        case .grid(let column):
+            self.scrollDirection = .vertical
+            let spacing = CGFloat(column - 1) * minimumLineSpacing
+            let optimisedWidth = (containerWidth - spacing) / CGFloat(column)
+            self.itemSize = CGSize(width: optimisedWidth , height: 143) // keep as square
+
+        case .list:
+            self.scrollDirection = .vertical
+            self.itemSize = CGSize(width: containerWidth, height: 143)
+        }
+    }
+
+    override func invalidateLayout() {
+        super.invalidateLayout()
+        self.configLayout()
     }
 }
