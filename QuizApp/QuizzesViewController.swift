@@ -43,29 +43,33 @@ class QuizzesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        ds = DataService()
-        quizlist = [Quiz]()
-        quizlistByCategory = [[Quiz](), [Quiz]()]
-        buildViews()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        
         gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [colorBackgroundLight.cgColor, colorBackgroundDark.cgColor]
         gradientLayer.startPoint = CGPoint(x: 0.6, y: 0.0)
         gradientLayer.endPoint = CGPoint(x: 0.4, y: 1.0)
         view.layer.insertSublayer(gradientLayer, at: 0)
+        
+        ds = DataService()
+        quizlist = [Quiz]()
+        quizlistByCategory = [[Quiz](), [Quiz]()]
+        buildViews()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        gradientLayer.frame = view.bounds
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        return .portrait
+//    }
     
     private func buildViews() {
         createViews()

@@ -46,15 +46,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        ds = DataService()
-        email = ""
-        password = ""
-         
-        buildViews()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         gradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = [colorBackgroundLight.cgColor, colorBackgroundDark.cgColor]
@@ -62,6 +53,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         gradientLayer.endPoint = CGPoint(x: 0.4, y: 1.0)
         //addSublayer doesn't give good results
         view.layer.insertSublayer(gradientLayer, at: 0)
+        
+        ds = DataService()
+        email = ""
+        password = ""
+         
+        buildViews()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        gradientLayer.frame = view.bounds
     }
     
     private func buildViews() {
@@ -306,9 +309,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return .lightContent
     }
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        return .portrait
+//    }
     
     func isValidEmail(string: String) -> Bool {
         //pattern validation code
