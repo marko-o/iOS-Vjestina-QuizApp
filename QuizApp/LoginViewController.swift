@@ -341,6 +341,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             switch status {
             case .success:
                 print("SUCCESS")
+                //set QVC as root
+                self.navigationController?.setViewControllers([QuizzesViewController()], animated: true)
             case .error(let errcode, let errmsg):
                 errorLabel.text = "Incorrect username and/or password"
                 print("ERROR (" + String(errcode) + "): " + errmsg)
