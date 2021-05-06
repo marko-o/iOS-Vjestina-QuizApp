@@ -67,6 +67,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         gradientLayer.frame = view.bounds
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = true
+       
+        // make the navigation bar transparent
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.isNavigationBarHidden = false
+    }
+    
     private func buildViews() {
         createViews()
         styleViews()
@@ -342,6 +357,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             case .success:
                 print("SUCCESS")
                 //set QVC as root
+                self.navigationController?.navigationBar.barStyle = .black
+                self.navigationController?.isNavigationBarHidden = false
                 self.navigationController?.setViewControllers([QuizzesViewController()], animated: true)
             case .error(let errcode, let errmsg):
                 errorLabel.text = "Incorrect username and/or password"
