@@ -58,17 +58,13 @@ class QuizzesViewController: UIViewController {
         view.layer.insertSublayer(gradientLayer, at: 0)
         
         //set only arrow as back button
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        self.parent!.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
         //set back button color
-        self.navigationController?.navigationBar.tintColor = .white
+        self.parent!.navigationController?.navigationBar.tintColor = .white
         // set light status bar contents
-        self.navigationController?.navigationBar.barStyle = .black
-       //set transparent navbar
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
-        
+        self.parent!.navigationController?.navigationBar.barStyle = .black
+
         ds = DataService()
         quizlist = [Quiz]()
         quizlistByCategory = [[Quiz](), [Quiz]()]
@@ -122,7 +118,7 @@ class QuizzesViewController: UIViewController {
         
         titleLabel = UILabel()
         titleLabel.text = "QuizApp"
-        self.navigationItem.titleView = titleLabel
+        self.parent!.navigationItem.titleView = titleLabel
         
         getQuizButton = UIButton()
         getQuizButton.setTitle("Get Quiz", for: .normal)

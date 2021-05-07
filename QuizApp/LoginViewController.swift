@@ -54,6 +54,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         //addSublayer doesn't give good results
         view.layer.insertSublayer(gradientLayer, at: 0)
         
+        //set only arrow as back button
+         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+         
+         //set back button color
+         self.navigationController?.navigationBar.tintColor = .white
+         // set light status bar contents
+         self.navigationController?.navigationBar.barStyle = .black
+        
+        //set transparent navbar
+         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+         self.navigationController?.navigationBar.shadowImage = UIImage()
+         self.navigationController?.navigationBar.isTranslucent = true
+        
         ds = DataService()
         email = ""
         password = ""
@@ -70,11 +83,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
-       
-        // make the navigation bar transparent
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -356,10 +364,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             switch status {
             case .success:
                 print("SUCCESS")
-                //set QVC as root
-                self.navigationController?.navigationBar.barStyle = .black
-                self.navigationController?.isNavigationBarHidden = false
-                self.navigationController?.setViewControllers([QuizzesViewController()], animated: true)
+                loadTabBarController()
             case .error(let errcode, let errmsg):
                 errorLabel.text = "Incorrect username and/or password"
                 print("ERROR (" + String(errcode) + "): " + errmsg)
@@ -370,6 +375,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             print("password: \"" + password + "\"")
             print("--------------- END ---------------")
         }
+    }
+    
+    private func loadTabBarController() {
+        let tabBarController = CustomTabBarController()
+        self.navigationController?.navigationBar.barStyle = .black
+        self.navigationController?.isNavigationBarHidden = false
+        self.navigationController?.setViewControllers([tabBarController], animated: true)
     }
 
 }

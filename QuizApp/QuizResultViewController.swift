@@ -96,6 +96,7 @@ class QuizResultViewController: UIViewController {
     }
     
     @objc func finished(_: UIButton) {
+        self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.popToRootViewController(animated: true)
     }
 }
