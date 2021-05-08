@@ -135,6 +135,8 @@ class QuizViewController: UIViewController {
     }
     
     func updateQuestionTracker(state: QuestionState) {
+        // disable user interaction until next question
+        // questionPageViewController.view.isUserInteractionEnabled = false
         if state == .correct {
             correctlyAnswered = correctlyAnswered + 1
         }
@@ -148,7 +150,7 @@ class QuizViewController: UIViewController {
     }
     
     func updateQuestionNumberLabel(index: Int) {
-        if index == quiz.questions.count {
+        if index > quiz.questions.count {
             let qrvc = QuizResultViewController(correct: correctlyAnswered, total: quiz.questions.count)
             self.navigationController?.pushViewController(qrvc, animated: true)
         } else {
@@ -158,14 +160,16 @@ class QuizViewController: UIViewController {
     }
     
     func goToNextQuestion() {
+        questionPageViewController.dataSource = questionPageViewController
        guard let currentViewController = questionPageViewController.viewControllers?.first else { return }
         guard let nextViewController = questionPageViewController.dataSource?.pageViewController( questionPageViewController, viewControllerAfter: currentViewController) else { return }
-        questionPageViewController.setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
+        questionPageViewController.setViewControllers([nextViewController], direction: .forward, animated: false, completion: nil)
+        questionPageViewController.dataSource = nil
     }
 
     func goToPreviousQuestion() {
        guard let currentViewController = questionPageViewController.viewControllers?.first else { return }
         guard let previousViewController = questionPageViewController.dataSource?.pageViewController( questionPageViewController, viewControllerBefore: currentViewController ) else { return }
-        questionPageViewController.setViewControllers([previousViewController], direction: .reverse, animated: true, completion: nil)
+        questionPageViewController.setViewControllers([previousViewController], direction: .reverse, animated: false, completion: nil)
     }
 }

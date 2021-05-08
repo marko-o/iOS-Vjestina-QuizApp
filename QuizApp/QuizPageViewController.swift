@@ -17,6 +17,9 @@ class QuizPageViewController: UIPageViewController {
         return pages.firstIndex(of: vc) ?? 0
     }
     
+//    var prevAllowed = false
+//    var nextAllowed = false
+    
     private var quiz: Quiz!
     
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
@@ -45,7 +48,7 @@ class QuizPageViewController: UIPageViewController {
         let pageAppearance = UIPageControl.appearance()
         pageAppearance.pageIndicatorTintColor = .clear
         
-        dataSource = self
+        dataSource = nil
         
         self.setViewControllers([pages.first!], direction: .forward, animated: true, completion: nil)
     }
@@ -53,6 +56,9 @@ class QuizPageViewController: UIPageViewController {
 
 extension QuizPageViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+//        if !prevAllowed {
+//            return nil
+//        }
         guard
             let currentIndex = pages.firstIndex(of: viewController),
             currentIndex - 1 >= 0,
@@ -66,6 +72,9 @@ extension QuizPageViewController: UIPageViewControllerDataSource {
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+//        if !nextAllowed {
+//            return nil
+//        }
         guard
             let currentIndex = pages.firstIndex(of: viewController),
             currentIndex + 1 < pages.count
@@ -77,3 +86,10 @@ extension QuizPageViewController: UIPageViewControllerDataSource {
         return pages[nextIndex]
     }
 }
+
+//extension QuizPageViewController: UIPageViewControllerDelegate {
+//    // only called when user initiates gesture
+//    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+//        self.view.isUserInteractionEnabled = true
+//    }
+//}
