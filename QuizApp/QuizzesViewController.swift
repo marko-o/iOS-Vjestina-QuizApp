@@ -25,7 +25,7 @@ class QuizzesViewController: UIViewController {
     private var funFactBody: UILabel!
     
     private var quizlist: [Quiz]!
-    private var quizlistByCategory: [[Quiz]]!
+    private var quizlistByCategory: [Int: [Quiz]]!
     
     // some commonly used values
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
@@ -67,7 +67,7 @@ class QuizzesViewController: UIViewController {
 
         ds = DataService()
         quizlist = [Quiz]()
-        quizlistByCategory = [[Quiz](), [Quiz]()]
+        quizlistByCategory = [Int: [Quiz]]()
         buildViews()
     }
     
@@ -149,7 +149,7 @@ class QuizzesViewController: UIViewController {
         quizlistCollectionView?.alwaysBounceVertical = true
         quizlistCollectionView?.bounces = true
         quizlistCollectionView?.delegate = self
-        quizlistCollectionView?.dataSource = self
+        quizlistCollectionView?.dataSource = nil
         quizlistCollectionView.register(QuizzesViewCell.self, forCellWithReuseIdentifier: "QuizCell")
         quizlistCollectionView.register(QuizHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(QuizHeaderView.self)")  // UICollectionReusableView
         quizlistContainer.addSubview(quizlistCollectionView)
@@ -232,6 +232,7 @@ class QuizzesViewController: UIViewController {
         quizlistContainer.isHidden = false
         quizlist = ds.fetchQuizes()
         quizlistByCategory = distributeByCategory(list: quizlist)
+        quizlistCollectionView?.dataSource = self
         self.quizlistCollectionView.performBatchUpdates({
             // seems slow, maybe consider other options later
             self.quizlistCollectionView.reloadData()
@@ -260,12 +261,7 @@ class QuizzesViewController: UIViewController {
 
 extension QuizzesViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if quizlistByCategory?.isEmpty ?? true {
-            return 0
-        } else {
-            // this should later be changed to count non-empty elements
-            return quizlistByCategory.count
-        }
+        return quizlistByCategory.keys.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -294,7 +290,7 @@ extension QuizzesViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "QuizCell", for: indexPath) as! QuizzesViewCell
-        let currentQuiz = quizlistByCategory[indexPath[0]][indexPath[1]]
+        guard let currentQuiz = quizlistByCategory[indexPath[0]]?[indexPath[1]] else { return cell }
         
         cell.quizTitle.text = currentQuiz.title
         cell.quizDescription.text = currentQuiz.description
@@ -340,22 +336,13 @@ extension QuizzesViewController: UICollectionViewDataSource {
         }
     }
     
-    /* Creates a two dimensional array from the original quiz array.
-     * This makes it easier to index using indexPath
+    /* Creates a dictionary from the original quiz array.
+     * This makes it easier to index using indexPath.
      */
-    func distributeByCategory(list: [Quiz]) -> [[Quiz]] {
-        // initialises the 2D array with 2 elements, since there are 2 category types
-        var byCategory = [[Quiz](), [Quiz]()]
-        for quiz in list {
-            var catIndex: Int
-            switch quiz.category {
-            case .sport:
-                catIndex = 0
-            case .science:
-                catIndex = 1
-            }
-            byCategory[catIndex].append(quiz)
-        }
+    func distributeByCategory(list: [Quiz]) -> [Int: [Quiz]] {
+        var byCategory = Dictionary(grouping: list, by: {
+            QuizCategory.allCases.firstIndex(of: $0.category) ?? 0
+        })
         return byCategory
     }
 }
@@ -363,7 +350,7 @@ extension QuizzesViewController: UICollectionViewDataSource {
 
 extension QuizzesViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedQuiz = quizlistByCategory[indexPath[0]][indexPath[1]]
+        guard let selectedQuiz = quizlistByCategory[indexPath[0]]?[indexPath[1]] else { return }
         let vc = QuizViewController(quiz: selectedQuiz)
         self.navigationController?.pushViewController(vc, animated: true)
     }
