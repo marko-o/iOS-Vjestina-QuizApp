@@ -57,6 +57,14 @@ class QuizzesViewController: UIViewController {
         gradientLayer.endPoint = CGPoint(x: 0.4, y: 1.0)
         view.layer.insertSublayer(gradientLayer, at: 0)
         
+        //set only arrow as back button
+        self.parent!.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        
+        //set back button color
+        self.parent!.navigationController?.navigationBar.tintColor = .white
+        // set light status bar contents
+        self.parent!.navigationController?.navigationBar.barStyle = .black
+
         ds = DataService()
         quizlist = [Quiz]()
         quizlistByCategory = [[Quiz](), [Quiz]()]
@@ -72,6 +80,12 @@ class QuizzesViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         self.reloadCollectionViewLayout(self.view.bounds.size.width)
+    }
+    
+    // doesn't work, something to do with presenting views
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationItem.titleView = titleLabel
     }
 
     private func reloadCollectionViewLayout(_ width: CGFloat) {
@@ -104,7 +118,7 @@ class QuizzesViewController: UIViewController {
         
         titleLabel = UILabel()
         titleLabel.text = "QuizApp"
-        container.addSubview(titleLabel)
+        self.parent!.navigationItem.titleView = titleLabel
         
         getQuizButton = UIButton()
         getQuizButton.setTitle("Get Quiz", for: .normal)
@@ -132,6 +146,8 @@ class QuizzesViewController: UIViewController {
             let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewFlowLayout)
             return collectionView
         }()
+        quizlistCollectionView?.alwaysBounceVertical = true
+        quizlistCollectionView?.bounces = true
         quizlistCollectionView?.delegate = self
         quizlistCollectionView?.dataSource = self
         quizlistCollectionView.register(QuizzesViewCell.self, forCellWithReuseIdentifier: "QuizCell")
@@ -161,7 +177,6 @@ class QuizzesViewController: UIViewController {
     private func defineLayoutForViews() {
         container.translatesAutoresizingMaskIntoConstraints = false
         quizlistContainer.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         getQuizButton.translatesAutoresizingMaskIntoConstraints = false
         funFactImageView.translatesAutoresizingMaskIntoConstraints = false
         funFactLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -181,7 +196,7 @@ class QuizzesViewController: UIViewController {
             container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             container.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            quizlistContainer.topAnchor.constraint(equalTo: container.topAnchor, constant: 210),
+            quizlistContainer.topAnchor.constraint(equalTo: getQuizButton.bottomAnchor, constant: 28),
             quizlistContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             quizlistContainer.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             quizlistContainer.bottomAnchor.constraint(equalTo: container.bottomAnchor),
@@ -190,14 +205,11 @@ class QuizzesViewController: UIViewController {
             quizlistCollectionView.leadingAnchor.constraint(equalTo: quizlistContainer.leadingAnchor),
             quizlistCollectionView.trailingAnchor.constraint(equalTo: quizlistContainer.trailingAnchor),
             quizlistCollectionView.bottomAnchor.constraint(equalTo: quizlistContainer.bottomAnchor),
-
-            titleLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 61),
             
             getQuizButtonLeading,
             getQuizButtonTrailing,
             getQuizButton.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            getQuizButton.topAnchor.constraint(equalTo: container.topAnchor, constant: 123),
+            getQuizButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 14),
             getQuizButton.widthAnchor.constraint(lessThanOrEqualToConstant: inputFieldMaxWidth),
             getQuizButton.heightAnchor.constraint(equalToConstant: inputFieldHeight),
             
@@ -351,7 +363,9 @@ extension QuizzesViewController: UICollectionViewDataSource {
 
 extension QuizzesViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // logic for opening quizzes
+        let selectedQuiz = quizlistByCategory[indexPath[0]][indexPath[1]]
+        let vc = QuizViewController(quiz: selectedQuiz)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
