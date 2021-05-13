@@ -336,11 +336,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 //        return .portrait
 //    }
     
-    func isValidEmail(string: String) -> Bool {
-        //pattern validation code
-        return true
-    }
-    
     //Toggle password visibility button target
     @objc func togglePasswordVisibility(_: UIButton) {
         passwordField.togglePasswordVisibility()
@@ -355,26 +350,24 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     //Login button target
     @objc func submit(_: UIButton) {
-        if isValidEmail(string: email) {
-            var status: LoginStatus!
-            email = email.trimmingCharacters(in: CharacterSet.newlines)
-            password = password.trimmingCharacters(in: CharacterSet.newlines)
-            status = ds.login(email: email, password: password)
-            print("\n-------- Login information --------")
-            switch status {
-            case .success:
-                print("SUCCESS")
-                loadTabBarController()
-            case .error(let errcode, let errmsg):
-                errorLabel.text = "Incorrect username and/or password"
-                print("ERROR (" + String(errcode) + "): " + errmsg)
-            case .none:
-                print("noinfo")
-            }
-            print("username: \"" + email + "\"")
-            print("password: \"" + password + "\"")
-            print("--------------- END ---------------")
+        var status: LoginStatus!
+        email = email.trimmingCharacters(in: CharacterSet.newlines)
+        password = password.trimmingCharacters(in: CharacterSet.newlines)
+        status = ds.login(email: email, password: password)
+        print("\n-------- Login information --------")
+        switch status {
+        case .success:
+            print("SUCCESS")
+            loadTabBarController()
+        case .error(let errcode, let errmsg):
+            errorLabel.text = "Incorrect username and/or password"
+            print("ERROR (" + String(errcode) + "): " + errmsg)
+        case .none:
+            print("noinfo")
         }
+        print("username: \"" + email + "\"")
+        print("password: \"" + password + "\"")
+        print("--------------- END ---------------")
     }
     
     private func loadTabBarController() {
