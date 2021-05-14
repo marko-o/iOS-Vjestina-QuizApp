@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PureLayout
 
 class QuizzesViewController: UIViewController {
     
@@ -175,56 +176,33 @@ class QuizzesViewController: UIViewController {
     }
     
     private func defineLayoutForViews() {
-        container.translatesAutoresizingMaskIntoConstraints = false
-        quizlistContainer.translatesAutoresizingMaskIntoConstraints = false
-        getQuizButton.translatesAutoresizingMaskIntoConstraints = false
-        funFactImageView.translatesAutoresizingMaskIntoConstraints = false
-        funFactLabel.translatesAutoresizingMaskIntoConstraints = false
-        funFactBody.translatesAutoresizingMaskIntoConstraints = false
-        quizlistCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        container.autoPinEdgesToSuperviewEdges()
 
-        let getQuizButtonLeading = getQuizButton.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 30)
-        let getQuizButtonTrailing = getQuizButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30)
-        
-        getQuizButtonLeading.priority = UILayoutPriority(750)
-        getQuizButtonTrailing.priority = UILayoutPriority(750)
-        
-        NSLayoutConstraint.activate([
-            container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            container.topAnchor.constraint(equalTo: view.topAnchor),
-            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            quizlistContainer.topAnchor.constraint(equalTo: getQuizButton.bottomAnchor, constant: 28),
-            quizlistContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            quizlistContainer.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            quizlistContainer.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            
-            quizlistCollectionView.topAnchor.constraint(equalTo: funFactBody.bottomAnchor, constant: 10),
-            quizlistCollectionView.leadingAnchor.constraint(equalTo: quizlistContainer.leadingAnchor),
-            quizlistCollectionView.trailingAnchor.constraint(equalTo: quizlistContainer.trailingAnchor),
-            quizlistCollectionView.bottomAnchor.constraint(equalTo: quizlistContainer.bottomAnchor),
-            
-            getQuizButtonLeading,
-            getQuizButtonTrailing,
-            getQuizButton.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            getQuizButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 14),
-            getQuizButton.widthAnchor.constraint(lessThanOrEqualToConstant: inputFieldMaxWidth),
-            getQuizButton.heightAnchor.constraint(equalToConstant: inputFieldHeight),
-            
-            funFactImageView.topAnchor.constraint(equalTo: quizlistContainer.topAnchor, constant: 4),
-            funFactImageView.leadingAnchor.constraint(equalTo: quizlistContainer.leadingAnchor, constant: 24),
-            funFactImageView.heightAnchor.constraint(equalToConstant: 28),
-            funFactImageView.widthAnchor.constraint(equalToConstant: 28),
-            
-            funFactLabel.topAnchor.constraint(equalTo: quizlistContainer.topAnchor, constant: 4),
-            funFactLabel.leadingAnchor.constraint(equalTo: funFactImageView.trailingAnchor, constant: 10),
-            
-            funFactBody.topAnchor.constraint(equalTo: funFactLabel.bottomAnchor, constant: 10),
-            funFactBody.leadingAnchor.constraint(equalTo: quizlistContainer.leadingAnchor, constant: 24),
-            funFactBody.trailingAnchor.constraint(equalTo: quizlistContainer.trailingAnchor, constant: -24)
-        ])
+        quizlistContainer.autoPinEdge(.top, to: .bottom, of: getQuizButton, withOffset: 28)
+        quizlistContainer.autoPinEdge(toSuperviewEdge: .bottom)
+        quizlistContainer.autoPinEdge(toSuperviewEdge: .leading)
+        quizlistContainer.autoPinEdge(toSuperviewEdge: .trailing)
+
+        quizlistCollectionView.autoPinEdge(.top, to: .bottom, of: funFactBody, withOffset: 10)
+        quizlistCollectionView.autoPinEdge(toSuperviewEdge: .bottom)
+        quizlistCollectionView.autoPinEdge(toSuperviewEdge: .leading)
+        quizlistCollectionView.autoPinEdge(toSuperviewEdge: .trailing)
+
+        getQuizButton.autoPinEdge(toSuperviewSafeArea: .top, withInset: 14)
+        getQuizButton.autoSetDimension(.height, toSize: 44)
+        getQuizButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 30)
+        getQuizButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 30)
+
+        funFactImageView.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        funFactImageView.autoPinEdge(toSuperviewEdge: .leading, withInset: 24)
+        funFactImageView.autoSetDimensions(to: CGSize(width: 28, height: 28))
+
+        funFactLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
+        funFactLabel.autoPinEdge(.leading, to: .trailing, of: funFactImageView, withOffset: 10)
+
+        funFactBody.autoPinEdge(.top, to: .bottom, of: funFactLabel, withOffset: 10)
+        funFactBody.autoPinEdge(toSuperviewEdge: .leading, withInset: 24)
+        funFactBody.autoPinEdge(toSuperviewEdge: .trailing, withInset: 24)
     }
     
     // getQuizButton target
@@ -340,7 +318,7 @@ extension QuizzesViewController: UICollectionViewDataSource {
      * This makes it easier to index using indexPath.
      */
     func distributeByCategory(list: [Quiz]) -> [Int: [Quiz]] {
-        var byCategory = Dictionary(grouping: list, by: {
+        let byCategory = Dictionary(grouping: list, by: {
             QuizCategory.allCases.firstIndex(of: $0.category) ?? 0
         })
         return byCategory
