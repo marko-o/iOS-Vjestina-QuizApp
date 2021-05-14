@@ -33,13 +33,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     // some commonly used values
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
     private let colorBackgroundDark = UIColor(red: 0.15, green: 0.18, blue: 0.46, alpha: 1.00)
-    private let inputFieldCornerRadius = CGFloat(22)
-    private let inputFieldHeight = CGFloat(44)
-    private let inputFieldMaxWidth = CGFloat(400)
-    private let inputFieldFontSize = CGFloat(16.0)
-    private let inputFieldLeftPadding = CGFloat(21)
-    private let inputFieldRightPadding = CGFloat(-21)
-    private let fieldSpacing = CGFloat(16.0)
     private let colorInputField = UIColor(white: 1.0, alpha: 0.3)
     private let colorButtonText = UIColor(red: 0.39, green: 0.16, blue: 0.87, alpha: 1.00)
     private let disabledButtonOpacity = CGFloat(0.60)
@@ -160,26 +153,26 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let placeholderFont = UIFont(name: "SourceSansPro-Regular", size: 16.0)
         emailField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white, NSAttributedString.Key.font: placeholderFont!] )
         emailField.borderStyle = .none
-        emailFieldContainer.layer.cornerRadius = inputFieldCornerRadius
+        emailFieldContainer.layer.cornerRadius = 22
         emailFieldContainer.backgroundColor = colorInputField
         
         passwordField.backgroundColor = UIColor(white: 0, alpha: 0)
         passwordField.textColor = .white
-        passwordField.font = UIFont(name: "SourceSansPro-Regular", size: inputFieldFontSize)
+        passwordField.font = UIFont(name: "SourceSansPro-Regular", size: 16)
         passwordField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white] )
         passwordField.borderStyle = .none
         
-        passwordFieldContainer.layer.cornerRadius = inputFieldCornerRadius
+        passwordFieldContainer.layer.cornerRadius = 22
         passwordFieldContainer.backgroundColor = colorInputField
         
         submitButton.backgroundColor = .white
-        submitButton.titleLabel?.font = UIFont(name: "SourceSansPro-Bold", size: inputFieldFontSize)
+        submitButton.titleLabel?.font = UIFont(name: "SourceSansPro-Bold", size: 16)
         submitButton.alpha = disabledButtonOpacity
         submitButton.setTitleColor(colorButtonText, for: .normal)
-        submitButton.layer.cornerRadius = inputFieldCornerRadius
+        submitButton.layer.cornerRadius = 22
         
         errorLabel.textColor = .white
-        errorLabel.font = UIFont(name: "SourceSansPro-SemiBold", size: inputFieldFontSize)
+        errorLabel.font = UIFont(name: "SourceSansPro-SemiBold", size: 16)
     }
     
     private func defineLayoutForViews() {

@@ -31,16 +31,6 @@ class QuizzesViewController: UIViewController {
     // some commonly used values
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
     private let colorBackgroundDark = UIColor(red: 0.15, green: 0.18, blue: 0.46, alpha: 1.00)
-    private let inputFieldCornerRadius = CGFloat(22)
-    private let inputFieldHeight = CGFloat(44)
-    private let inputFieldMaxWidth = CGFloat(400)
-    private let inputFieldFontSize = CGFloat(16.0)
-    private let inputFieldLeftPadding = CGFloat(21)
-    private let inputFieldRightPadding = CGFloat(-21)
-    private let fieldSpacing = CGFloat(16.0)
-    private let colorInputField = UIColor(white: 1.0, alpha: 0.3)
-    private let colorButtonText = UIColor(red: 0.39, green: 0.16, blue: 0.87, alpha: 1.00)
-    private let disabledButtonOpacity = CGFloat(0.60)
     
     lazy var collectionViewFlowLayout : CustomCollectionViewFlowLayout = {
         let layout = CustomCollectionViewFlowLayout(display: .list, containerWidth: self.view.bounds.width)
@@ -161,9 +151,10 @@ class QuizzesViewController: UIViewController {
         titleLabel.font = UIFont(name: "SourceSansPro-Bold", size: 24.0)
         
         getQuizButton.backgroundColor = .white
-        getQuizButton.titleLabel?.font = UIFont(name: "SourceSansPro-Bold", size: inputFieldFontSize)
+        getQuizButton.titleLabel?.font = UIFont(name: "SourceSansPro-Bold", size: 16)
+        let colorButtonText = UIColor(red: 0.39, green: 0.16, blue: 0.87, alpha: 1.00)
         getQuizButton.setTitleColor(colorButtonText, for: .normal)
-        getQuizButton.layer.cornerRadius = inputFieldCornerRadius
+        getQuizButton.layer.cornerRadius = 22
         
         quizlistContainer.backgroundColor = .clear
         quizlistCollectionView.backgroundColor = .clear

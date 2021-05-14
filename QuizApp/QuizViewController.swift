@@ -27,17 +27,6 @@ class QuizViewController: UIViewController {
     // some commonly used values
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
     private let colorBackgroundDark = UIColor(red: 0.15, green: 0.18, blue: 0.46, alpha: 1.00)
-    private let inputFieldLeftPadding = CGFloat(21)
-    private let inputFieldRightPadding = CGFloat(-21)
-    private let fieldSpacing = CGFloat(16.0)
-    private let colorInputField = UIColor(white: 1.0, alpha: 0.3)
-    private let colorButtonText = UIColor(red: 0.39, green: 0.16, blue: 0.87, alpha: 1.00)
-    private let disabledButtonOpacity = CGFloat(0.60)
-    
-    private let colorUnanswered = UIColor(white: 1.0, alpha: 0.3)
-    private let colorCurrent = UIColor(white: 1.0, alpha: 1.0)
-    private let colorCorrect = UIColor(red: 0.44, green: 0.81, blue: 0.59, alpha: 1.00)
-    private let colorIncorrect = UIColor(red: 0.99, green: 0.40, blue: 0.40, alpha: 1.00)
     
     init(quiz: Quiz) {
         self.quiz = quiz
