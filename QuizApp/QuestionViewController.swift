@@ -78,34 +78,24 @@ class QuestionViewController: UIViewController {
     }
     
     private func defineLayoutForViews() {
-        container.translatesAutoresizingMaskIntoConstraints = false
-        questionLabel.translatesAutoresizingMaskIntoConstraints = false
+        container.autoPinEdgesToSuperviewEdges()
+        questionLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 20)
+        questionLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+        questionLabel.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
+        questionLabel.autoSetDimension(.height, toSize: 140)
         
         var prevButton: UIButton! = nil
         for button in answerButtons {
-            button.translatesAutoresizingMaskIntoConstraints = false
-            button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20).isActive = true
-            button.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20).isActive = true
+            button.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+            button.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
             if prevButton == nil {
-                button.topAnchor.constraint(equalTo: questionLabel.bottomAnchor, constant: 20).isActive = true
+                button.autoPinEdge(.top, to: .bottom, of: questionLabel, withOffset: 20)
             } else {
-                button.topAnchor.constraint(equalTo: prevButton.bottomAnchor, constant: 16).isActive = true
+                button.autoPinEdge(.top, to: .bottom, of: prevButton, withOffset: 16)
             }
-            button.heightAnchor.constraint(equalToConstant: 56).isActive = true
+            button.autoSetDimension(.height, toSize: 56)
             prevButton = button
         }
-        
-        NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: view.topAnchor),
-            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            questionLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
-            questionLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-            questionLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
-            questionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 140),
-            
-        ])
     }
     
     @objc func answered(button: UIButton) {

@@ -18,9 +18,8 @@ class QuizHeaderView: UICollectionReusableView {
         self.addSubview(titleLabel)
         titleLabel.textColor = UIColor(red: 0.95, green: 0.79, blue: 0.30, alpha: 1.00)
         titleLabel.font = UIFont(name: "SourceSansPro-Bold", size: 20.0)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 24).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12).isActive = true
+        titleLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 24)
+        titleLabel.autoPinEdge(toSuperviewEdge: .bottom, withInset: 12)
     }
     
     required init?(coder: NSCoder) {

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PureLayout
 
 class QuizViewController: UIViewController {
     
@@ -108,30 +109,22 @@ class QuizViewController: UIViewController {
     }
     
     private func defineLayoutForViews() {
-        container.translatesAutoresizingMaskIntoConstraints = false
-        questionNumberLabel.translatesAutoresizingMaskIntoConstraints = false
-        questionTrackerView.translatesAutoresizingMaskIntoConstraints = false
-        questionPageViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        container.autoPinEdgesToSuperviewSafeArea()
         
-        NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: view.topAnchor),
-            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            questionNumberLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            questionNumberLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 21),
-            questionNumberLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            questionNumberLabel.heightAnchor.constraint(equalToConstant: 40),
-            questionTrackerView.topAnchor.constraint(equalTo: questionNumberLabel.bottomAnchor, constant: 10),
-            questionTrackerView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-            questionTrackerView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
-            questionTrackerView.heightAnchor.constraint(equalToConstant: 7),
-            questionPageViewController.view.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            questionPageViewController.view.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            questionPageViewController.view.topAnchor.constraint(equalTo: questionTrackerView.bottomAnchor, constant: 1),
-            questionPageViewController.view.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-            
-        ])
+        questionNumberLabel.autoPinEdge(toSuperviewEdge: .top)
+        questionNumberLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 21)
+        questionNumberLabel.autoPinEdge(toSuperviewEdge: .trailing)
+        questionNumberLabel.autoSetDimension(.height, toSize: 40)
+        
+        questionTrackerView.autoPinEdge(.top, to: .bottom, of: questionNumberLabel, withOffset: 10)
+        questionTrackerView.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+        questionTrackerView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
+        questionTrackerView.autoSetDimension(.height, toSize: 7)
+        
+        questionPageViewController.view.autoPinEdge(toSuperviewEdge: .leading)
+        questionPageViewController.view.autoPinEdge(toSuperviewEdge: .trailing)
+        questionPageViewController.view.autoPinEdge(.top, to: .bottom, of: questionTrackerView, withOffset: 1)
+        questionPageViewController.view.autoPinEdge(toSuperviewEdge: .bottom)
     }
     
     func updateQuestionTracker(state: QuestionState) {

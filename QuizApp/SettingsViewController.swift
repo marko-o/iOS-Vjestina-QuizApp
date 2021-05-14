@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PureLayout
 
 class SettingsViewController: UIViewController {
     
@@ -76,28 +77,21 @@ class SettingsViewController: UIViewController {
     }
     
     private func defineLayoutForViews() {
-        container.translatesAutoresizingMaskIntoConstraints = false
-        usernameTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
-        logoutButton.translatesAutoresizingMaskIntoConstraints = false
+        container.autoPinEdgesToSuperviewSafeArea()
         
-        NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            container.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            usernameTitleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 20),
-            usernameTitleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-            usernameTitleLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
-            usernameTitleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 20),
-            usernameLabel.topAnchor.constraint(equalTo: usernameTitleLabel.bottomAnchor, constant: 4),
-            usernameLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-            usernameLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
-            logoutButton.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 32),
-            logoutButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -32),
-            logoutButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -32),
-            logoutButton.heightAnchor.constraint(equalToConstant: 44)
-        ])
+        usernameTitleLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 20)
+        usernameTitleLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+        usernameTitleLabel.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
+        usernameTitleLabel.autoSetDimension(.height, toSize: 20)
+        
+        usernameLabel.autoPinEdge(.top, to: .bottom, of: usernameTitleLabel, withOffset: 4)
+        usernameLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+        usernameLabel.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
+        
+        logoutButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 32)
+        logoutButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 32)
+        logoutButton.autoPinEdge(toSuperviewEdge: .bottom, withInset: 32)
+        logoutButton.autoSetDimension(.height, toSize: 44)
     }
     
     @objc func logout(_ button: UIButton) {

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PureLayout
 
 class QuizResultViewController: UIViewController {
     
@@ -46,20 +47,15 @@ class QuizResultViewController: UIViewController {
         
         container = UIView()
         view.addSubview(container)
-        container.translatesAutoresizingMaskIntoConstraints = false
-        container.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        container.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        container.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        container.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        container.autoPinEdgesToSuperviewEdges()
         
         resultLabel = UILabel()
         container.addSubview(resultLabel)
         resultLabel.text = String(correct) + "/" + String(total)
         resultLabel.font = UIFont(name: "SourceSansPro-Bold", size: 88.0)
         resultLabel.textColor = .white
-        resultLabel.translatesAutoresizingMaskIntoConstraints = false
-        resultLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor).isActive = true
-        resultLabel.bottomAnchor.constraint(equalTo: container.centerYAnchor).isActive = true
+        resultLabel.autoAlignAxis(toSuperviewAxis: .vertical)
+        resultLabel.autoAlignAxis(.horizontal, toSameAxisOf: container, withOffset: -88)
         
         let attrFinishLabel = NSAttributedString(string: "Finish Quiz", attributes: [.foregroundColor: colorButtonText, .font: buttonFont!])
         finishButton = UIButton()
@@ -68,11 +64,11 @@ class QuizResultViewController: UIViewController {
         finishButton.backgroundColor = .white
         finishButton.layer.cornerRadius = 22
         finishButton.addTarget(self, action: #selector(self.finished(_:)), for: .touchUpInside)
-        finishButton.translatesAutoresizingMaskIntoConstraints = false
-        finishButton.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 40).isActive = true
-        finishButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -40).isActive = true
-        finishButton.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -44).isActive = true
-        finishButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        
+        finishButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 40)
+        finishButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 40)
+        finishButton.autoPinEdge(toSuperviewEdge: .bottom, withInset: 44)
+        finishButton.autoSetDimension(.height, toSize: 44)
     }
     
     override func viewDidLayoutSubviews() {

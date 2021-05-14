@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PureLayout
 
 class QuizzesViewCell: UICollectionViewCell {
     var bg: UIView!
@@ -73,48 +74,33 @@ class QuizzesViewCell: UICollectionViewCell {
     }
     
     private func defineLayoutConstraints() {
-        bg.translatesAutoresizingMaskIntoConstraints = false
-        thumbnail.translatesAutoresizingMaskIntoConstraints = false
-        quizTitle.translatesAutoresizingMaskIntoConstraints = false
-        quizDescription.translatesAutoresizingMaskIntoConstraints = false
-        levelIndicatorsContainer.translatesAutoresizingMaskIntoConstraints = false
+        bg.autoPinEdgesToSuperviewEdges()
         
-        // constraints for level indicators
+        thumbnail.autoPinEdge(toSuperviewEdge: .top, withInset: 20)
+        thumbnail.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
+        thumbnail.autoSetDimensions(to: CGSize(width: 103, height: 103))
+
+        quizTitle.autoPinEdge(toSuperviewEdge: .top, withInset: 28)
+        quizTitle.autoPinEdge(.leading, to: .trailing, of: thumbnail, withOffset: 18)
+        quizTitle.autoPinEdge(toSuperviewEdge: .trailing, withInset: 18)
+        
+        quizDescription.autoPinEdge(.top, to: .bottom, of: quizTitle)
+        quizDescription.autoPinEdge(.leading, to: .trailing, of: thumbnail, withOffset: 18)
+        quizDescription.autoPinEdge(toSuperviewEdge: .trailing, withInset: 18)
+        
+        levelIndicatorsContainer.autoPinEdge(toSuperviewEdge: .top, withInset: 16)
+        levelIndicatorsContainer.autoPinEdge(toSuperviewEdge: .trailing, withInset: 16)
+        levelIndicatorsContainer.autoSetDimension(.width, toSize: 50)
+        
         var posOffset = CGFloat(0)
         for li in levelIndicators {
-            li.translatesAutoresizingMaskIntoConstraints = false
-            li.topAnchor.constraint(equalTo: levelIndicatorsContainer.topAnchor).isActive = true
-            li.leadingAnchor.constraint(equalTo: levelIndicatorsContainer.leadingAnchor, constant: posOffset).isActive = true
-            li.widthAnchor.constraint(equalToConstant: 10).isActive = true
-            li.heightAnchor.constraint(equalToConstant: 10).isActive = true
+            li.autoPinEdge(toSuperviewEdge: .top)
+            li.autoPinEdge(toSuperviewEdge: .leading, withInset: posOffset)
+            li.autoSetDimensions(to: CGSize(width: 10, height: 10))
             posOffset = posOffset + 18
             let degrees = Double(45)
             li.transform = CGAffineTransform(rotationAngle: CGFloat(degrees * .pi/180));
         }
-        
-        NSLayoutConstraint.activate([
-            bg.topAnchor.constraint(equalTo: contentView.topAnchor),
-            bg.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            bg.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            bg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            bg.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            
-            thumbnail.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: 20),
-            thumbnail.topAnchor.constraint(equalTo: bg.topAnchor, constant: 20),
-            thumbnail.heightAnchor.constraint(equalToConstant: 103),
-            thumbnail.widthAnchor.constraint(equalToConstant: 103),
-            
-            quizTitle.topAnchor.constraint(equalTo: bg.topAnchor, constant: 26),
-            quizTitle.leadingAnchor.constraint(equalTo: thumbnail.trailingAnchor, constant: 18),
-            quizTitle.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -18),
-            quizDescription.topAnchor.constraint(equalTo: quizTitle.bottomAnchor, constant: 0),
-            quizDescription.leadingAnchor.constraint(equalTo: thumbnail.trailingAnchor, constant: 18),
-            quizDescription.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -18),
-            
-            levelIndicatorsContainer.topAnchor.constraint(equalTo: bg.topAnchor, constant: 16),
-            levelIndicatorsContainer.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -16),
-            levelIndicatorsContainer.widthAnchor.constraint(equalToConstant: 50)
-        ])
     }
     
     // could add option for setting color later

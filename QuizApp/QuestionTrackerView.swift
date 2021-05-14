@@ -37,16 +37,13 @@ class QuestionTrackerView: UIView {
         stackView.distribution = .fillEqually
         stackView.alignment = .center
         stackView.spacing = 8
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(stackView)
-        stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        stackView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        
+        stackView.autoPinEdgesToSuperviewEdges()
         for v in questionViews {
-            v.heightAnchor.constraint(equalToConstant: 5).isActive = true
+            v.autoSetDimension(.height, toSize: 5)
             v.layer.cornerRadius = 2.5
-            v.centerYAnchor.constraint(equalTo: stackView.centerYAnchor).isActive = true
+            v.autoAlignAxis(toSuperviewAxis: .horizontal)
         }
     }
     
