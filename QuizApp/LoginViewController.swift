@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PureLayout
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
@@ -181,96 +182,47 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         errorLabel.font = UIFont(name: "SourceSansPro-SemiBold", size: inputFieldFontSize)
     }
     
-    
     private func defineLayoutForViews() {
-        container.translatesAutoresizingMaskIntoConstraints = false
-        fieldContainer.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        emailField.translatesAutoresizingMaskIntoConstraints = false
-        emailFieldContainer.translatesAutoresizingMaskIntoConstraints = false
-        passwordField.translatesAutoresizingMaskIntoConstraints = false
-        passwordFieldContainer.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
-        errorLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        /* explicitly defined constraints so that priority could be set */
-        
-        let emailFieldContainerLeading = emailFieldContainer.leadingAnchor.constraint(equalTo: fieldContainer.leadingAnchor, constant: 30)
-        let emailFieldContainerTrailing =
-        emailFieldContainer.trailingAnchor.constraint(equalTo: fieldContainer.trailingAnchor, constant: -30)
-        emailFieldContainerLeading.priority = UILayoutPriority(750)
-        emailFieldContainerTrailing.priority = UILayoutPriority(750)
-        
-        let passwordFieldContainerLeading = passwordFieldContainer.leadingAnchor.constraint(equalTo: fieldContainer.leadingAnchor, constant: 30)
-        let passwordFieldContainerTrailing = passwordFieldContainer.trailingAnchor.constraint(equalTo: fieldContainer.trailingAnchor, constant: -30)
-        passwordFieldContainerLeading.priority = UILayoutPriority(750)
-        passwordFieldContainerTrailing.priority = UILayoutPriority(750)
-        
-        let submitButtonLeading =
-            submitButton.leadingAnchor.constraint(equalTo: fieldContainer.leadingAnchor, constant: 30)
-        let submitButtonTrailing = submitButton.trailingAnchor.constraint(equalTo: fieldContainer.trailingAnchor, constant: -30)
-        submitButtonLeading.priority = UILayoutPriority(750)
-        submitButtonTrailing.priority = UILayoutPriority(750)
-        
-        
-        NSLayoutConstraint.activate([
-            container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            container.topAnchor.constraint(equalTo: view.topAnchor, constant: 79),
-            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            container.heightAnchor.constraint(equalToConstant: 370),
-            
-            titleLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: container.topAnchor),
-            
-            fieldContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            fieldContainer.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            fieldContainer.heightAnchor.constraint(equalToConstant: 300),
-            fieldContainer.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -40),
-            
-            
-            // email textfield within container
-            emailField.leadingAnchor.constraint(equalTo: emailFieldContainer.leadingAnchor, constant: inputFieldLeftPadding),
-            emailField.trailingAnchor.constraint(equalTo: emailFieldContainer.trailingAnchor, constant: inputFieldRightPadding),
-            emailField.topAnchor.constraint(equalTo: emailFieldContainer.topAnchor),
-            emailField.bottomAnchor.constraint(equalTo: emailFieldContainer.bottomAnchor),
-            emailField.centerYAnchor.constraint(equalTo: emailFieldContainer.centerYAnchor),
-           
-            // constraints for email container
-            emailFieldContainerLeading,
-            emailFieldContainerTrailing,
-            emailFieldContainer.widthAnchor.constraint(lessThanOrEqualToConstant: inputFieldMaxWidth),
-            emailFieldContainer.heightAnchor.constraint(equalToConstant: inputFieldHeight),
-            emailFieldContainer.centerXAnchor.constraint(equalTo: fieldContainer.centerXAnchor),
-            emailFieldContainer.bottomAnchor.constraint(equalTo: passwordFieldContainer.topAnchor, constant: -fieldSpacing),
-            
-            
-            // password textfield within container
-            passwordField.leadingAnchor.constraint(equalTo: passwordFieldContainer.leadingAnchor, constant: inputFieldLeftPadding),
-            passwordField.trailingAnchor.constraint(equalTo: passwordFieldContainer.trailingAnchor, constant: inputFieldRightPadding),
-            passwordField.topAnchor.constraint(equalTo: passwordFieldContainer.topAnchor),
-            passwordField.bottomAnchor.constraint(equalTo: passwordFieldContainer.bottomAnchor),
-            passwordField.centerYAnchor.constraint(equalTo: passwordFieldContainer.centerYAnchor),
-            
-            // constraints for password container
-            passwordFieldContainerLeading,
-            passwordFieldContainerTrailing,
-            passwordFieldContainer.widthAnchor.constraint(lessThanOrEqualToConstant: inputFieldMaxWidth),
-            passwordFieldContainer.heightAnchor.constraint(equalToConstant: inputFieldHeight),
-            passwordFieldContainer.centerXAnchor.constraint(equalTo: fieldContainer.centerXAnchor),
-            passwordFieldContainer.bottomAnchor.constraint(equalTo: submitButton.topAnchor, constant: -fieldSpacing),
-            
-            
-            submitButtonLeading,
-            submitButtonTrailing,
-            submitButton.widthAnchor.constraint(lessThanOrEqualToConstant: inputFieldMaxWidth),
-            submitButton.heightAnchor.constraint(equalToConstant: inputFieldHeight),
-            submitButton.centerXAnchor.constraint(equalTo: fieldContainer.centerXAnchor),
-            submitButton.bottomAnchor.constraint(equalTo: fieldContainer.bottomAnchor, constant: -fieldSpacing),
-            
-            errorLabel.centerXAnchor.constraint(equalTo: fieldContainer.centerXAnchor),
-            errorLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -16)
-        ])
+        container.autoSetDimension(.height, toSize: 370)
+        container.autoPinEdge(toSuperviewEdge: .top, withInset: 79)
+        container.autoPinEdge(toSuperviewEdge: .leading)
+        container.autoPinEdge(toSuperviewEdge: .trailing)
+
+        fieldContainer.autoSetDimension(.height, toSize: 300)
+        fieldContainer.autoPinEdge(toSuperviewEdge: .leading)
+        fieldContainer.autoPinEdge(toSuperviewEdge: .trailing)
+        fieldContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 40)
+
+        emailField.autoPinEdge(toSuperviewEdge: .top)
+        emailField.autoPinEdge(toSuperviewEdge: .bottom)
+        emailField.autoPinEdge(toSuperviewEdge: .leading, withInset: 21)
+        emailField.autoPinEdge(toSuperviewEdge: .trailing, withInset: 21)
+
+        emailFieldContainer.autoPinEdge(toSuperviewEdge: .leading, withInset: 30)
+        emailFieldContainer.autoPinEdge(toSuperviewEdge: .trailing, withInset: 30)
+        emailFieldContainer.autoPinEdge(.bottom, to: .top, of: passwordFieldContainer, withOffset: -16)
+        emailFieldContainer.autoSetDimension(.height, toSize: 44)
+
+        passwordField.autoPinEdge(toSuperviewEdge: .top)
+        passwordField.autoPinEdge(toSuperviewEdge: .bottom)
+        passwordField.autoPinEdge(toSuperviewEdge: .leading, withInset: 21)
+        passwordField.autoPinEdge(toSuperviewEdge: .trailing, withInset: 21)
+
+        passwordFieldContainer.autoPinEdge(toSuperviewEdge: .leading, withInset: 30)
+        passwordFieldContainer.autoPinEdge(toSuperviewEdge: .trailing, withInset: 30)
+        passwordFieldContainer.autoPinEdge(.bottom, to: .top, of: submitButton, withOffset: -16)
+        passwordFieldContainer.autoSetDimension(.height, toSize: 44)
+
+        submitButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 30)
+        submitButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 30)
+        submitButton.autoPinEdge(.bottom, to: .bottom, of: fieldContainer)
+        submitButton.autoSetDimension(.height, toSize: 44)
+
+        titleLabel.autoAlignAxis(toSuperviewAxis: .vertical)
+        titleLabel.autoPinEdge(toSuperviewEdge: .top)
+
+        errorLabel.autoAlignAxis(toSuperviewAxis: .vertical)
+        errorLabel.autoPinEdge(toSuperviewEdge: .bottom)
     }
     
     
