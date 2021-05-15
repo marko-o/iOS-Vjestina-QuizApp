@@ -19,6 +19,7 @@ class QuestionViewController: UIViewController {
     
     private var container: UIView!
     private var fieldContainer: UIView!
+    private var scrollView: CustomScrollView!
     
     private var questionLabel: UILabel!
     private var answerButtons: [UIButton]!
@@ -44,6 +45,11 @@ class QuestionViewController: UIViewController {
         buildViews()
     }
     
+    override func viewDidLayoutSubviews() {
+        container.sizeToFit()
+        scrollView.contentSize = container.frame.size
+    }
+    
     // unnecessary with navigation bar
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -57,10 +63,12 @@ class QuestionViewController: UIViewController {
     
     private func createViews() {
         container = UIView()
+        scrollView = CustomScrollView()
         questionLabel = UILabel()
         answerButtons = [UIButton(), UIButton(), UIButton(), UIButton()]
         
-        view.addSubview(container)
+        view.addSubview(scrollView)
+        scrollView.addSubview(container)
         container.addSubview(questionLabel)
         for button in answerButtons {
             button.addTarget(self, action: #selector(self.answered(button:)), for: .touchUpInside)
@@ -82,7 +90,9 @@ class QuestionViewController: UIViewController {
     }
     
     private func defineLayoutForViews() {
-        container.autoPinEdgesToSuperviewEdges()
+        scrollView.autoPinEdgesToSuperviewEdges()
+        container.autoPinEdge(.leading, to: .leading, of: view)
+        container.autoPinEdge(.trailing, to: .trailing, of: view)
         questionLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 20)
         questionLabel.autoPinEdge(toSuperviewEdge: .leading, withInset: 20)
         questionLabel.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
@@ -100,6 +110,8 @@ class QuestionViewController: UIViewController {
             button.autoSetDimension(.height, toSize: 56)
             prevButton = button
         }
+        //last button is pinned to the bottom so that sizeToFit works
+        prevButton.autoPinEdge(toSuperviewEdge: .bottom)
     }
     
     @objc func answered(button: UIButton) {
