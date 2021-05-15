@@ -17,6 +17,8 @@ class QuizPageViewController: UIPageViewController {
         return pages.firstIndex(of: vc) ?? 0
     }
     
+    weak var questionDelegate: QuestionDelegate!
+    
 //    var prevAllowed = false
 //    var nextAllowed = false
     
@@ -25,10 +27,11 @@ class QuizPageViewController: UIPageViewController {
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
     private let colorBackgroundDark = UIColor(red: 0.15, green: 0.18, blue: 0.46, alpha: 1.00)
     
-    init(quiz: Quiz) {
+    init(quiz: Quiz, questionDelegate: QuestionDelegate) {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         
         self.quiz = quiz
+        self.questionDelegate = questionDelegate
     }
     
     required init?(coder: NSCoder) {
@@ -41,7 +44,7 @@ class QuizPageViewController: UIPageViewController {
         // load questions
         pages = [UIViewController]()
         for question in quiz.questions {
-            let questionViewController = QuestionViewController(question: question)
+            let questionViewController = QuestionViewController(question: question, questionDelegate: questionDelegate)
             pages.append(questionViewController)
         }
         
@@ -85,6 +88,26 @@ extension QuizPageViewController: UIPageViewControllerDataSource {
         let nextIndex = currentIndex + 1
         return pages[nextIndex]
     }
+}
+
+extension QuizPageViewController: QuizPageViewControllerDelegate {
+    func goToNextQuestion(_ caller: AnyObject) {
+        dataSource = self
+        guard let currentViewController = viewControllers?.first else { return }
+        guard let nextViewController = dataSource?.pageViewController(self, viewControllerAfter: currentViewController) else { return }
+        self.setViewControllers([nextViewController], direction: .forward, animated: false, completion: nil)
+        dataSource = nil
+    }
+    
+    func goToPreviousQuestion(_ caller: AnyObject) {
+        dataSource = self
+        guard let currentViewController = viewControllers?.first else { return }
+        guard let prevViewController = dataSource?.pageViewController(self, viewControllerBefore: currentViewController) else { return }
+        self.setViewControllers([prevViewController], direction: .reverse, animated: false, completion: nil)
+        dataSource = nil
+    }
+    
+    
 }
 
 //extension QuizPageViewController: UIPageViewControllerDelegate {

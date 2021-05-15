@@ -11,6 +11,8 @@ import UIKit
 import PureLayout
 
 class QuestionViewController: UIViewController {
+    
+    weak var delegate: QuestionDelegate?
 
     private var question: Question!
     private var questions: [Question]!
@@ -26,8 +28,9 @@ class QuestionViewController: UIViewController {
     private let colorCorrect = UIColor(red: 0.44, green: 0.81, blue: 0.59, alpha: 1.00)
     private let colorIncorrect = UIColor(red: 0.99, green: 0.40, blue: 0.40, alpha: 1.00)
     
-    init(question: Question) {
+    init(question: Question, questionDelegate: QuestionDelegate) {
         self.question = question
+        self.delegate = questionDelegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -116,8 +119,7 @@ class QuestionViewController: UIViewController {
             b.isEnabled = false
         }
         
-        let quizVC = self.parent!.parent! as! QuizViewController
-        quizVC.updateQuestionTracker(state: qstate)
+        self.delegate?.questionWasAnswered(self, state: qstate)
     }
     
     private func updateQuestionData() {

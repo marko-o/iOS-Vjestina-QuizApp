@@ -22,7 +22,8 @@ class QuizViewController: UIViewController {
     private var correctlyAnswered: Int!
     private var questionNumberLabel: UILabel!
     private var questionTrackerView: QuestionTrackerView!
-    private var questionPageViewController: QuizPageViewController!
+    private var quizPageViewController: QuizPageViewController!
+    private var quizPageViewControllerDelegate: QuizPageViewControllerDelegate!
     
     // some commonly used values
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
@@ -76,14 +77,15 @@ class QuizViewController: UIViewController {
         titleLabel.text = "QuizApp"
         questionNumberLabel = UILabel()
         questionTrackerView = QuestionTrackerView(questions: quiz.questions.count)
-        questionPageViewController = QuizPageViewController(quiz: quiz)
-        self.addChild(questionPageViewController)
-        questionPageViewController.didMove(toParent: self)
+        quizPageViewController = QuizPageViewController(quiz: quiz, questionDelegate: self)
+        quizPageViewControllerDelegate = quizPageViewController
+        self.addChild(quizPageViewController)
+        quizPageViewController.didMove(toParent: self)
         
         view.addSubview(container)
         container.addSubview(questionNumberLabel)
         container.addSubview(questionTrackerView)
-        container.addSubview(questionPageViewController.view)
+        container.addSubview(quizPageViewController.view)
         
         navigationItem.titleView = titleLabel
         
@@ -110,15 +112,13 @@ class QuizViewController: UIViewController {
         questionTrackerView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 20)
         questionTrackerView.autoSetDimension(.height, toSize: 7)
         
-        questionPageViewController.view.autoPinEdge(toSuperviewEdge: .leading)
-        questionPageViewController.view.autoPinEdge(toSuperviewEdge: .trailing)
-        questionPageViewController.view.autoPinEdge(.top, to: .bottom, of: questionTrackerView, withOffset: 1)
-        questionPageViewController.view.autoPinEdge(toSuperviewEdge: .bottom)
+        quizPageViewController.view.autoPinEdge(toSuperviewEdge: .leading)
+        quizPageViewController.view.autoPinEdge(toSuperviewEdge: .trailing)
+        quizPageViewController.view.autoPinEdge(.top, to: .bottom, of: questionTrackerView, withOffset: 1)
+        quizPageViewController.view.autoPinEdge(toSuperviewEdge: .bottom)
     }
     
     func updateQuestionTracker(state: QuestionState) {
-        // disable user interaction until next question
-        // questionPageViewController.view.isUserInteractionEnabled = false
         if state == .correct {
             correctlyAnswered = correctlyAnswered + 1
         }
@@ -126,7 +126,7 @@ class QuizViewController: UIViewController {
         
         let seconds = 2.0
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            self.goToNextQuestion()
+            self.quizPageViewControllerDelegate.goToNextQuestion(self)
             self.updateQuestionNumberLabel(index: self.currentQuestionNumber + 1)
         }
     }
@@ -140,18 +140,10 @@ class QuizViewController: UIViewController {
             questionNumberLabel.text = String(currentQuestionNumber) + "/" + String(quiz.questions.count)
         }
     }
-    
-    func goToNextQuestion() {
-        questionPageViewController.dataSource = questionPageViewController
-       guard let currentViewController = questionPageViewController.viewControllers?.first else { return }
-        guard let nextViewController = questionPageViewController.dataSource?.pageViewController( questionPageViewController, viewControllerAfter: currentViewController) else { return }
-        questionPageViewController.setViewControllers([nextViewController], direction: .forward, animated: false, completion: nil)
-        questionPageViewController.dataSource = nil
-    }
+}
 
-    func goToPreviousQuestion() {
-       guard let currentViewController = questionPageViewController.viewControllers?.first else { return }
-        guard let previousViewController = questionPageViewController.dataSource?.pageViewController( questionPageViewController, viewControllerBefore: currentViewController ) else { return }
-        questionPageViewController.setViewControllers([previousViewController], direction: .reverse, animated: false, completion: nil)
+extension QuizViewController: QuestionDelegate {
+    func questionWasAnswered(_ caller: AnyObject, state: QuestionState) {
+        updateQuestionTracker(state: state)
     }
 }
