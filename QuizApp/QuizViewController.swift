@@ -25,6 +25,8 @@ class QuizViewController: UIViewController {
     private var quizPageViewController: QuizPageViewController!
     private var quizPageViewControllerDelegate: QuizPageViewControllerDelegate!
     
+    private var startTime: UInt64!
+    
     // some commonly used values
     private let colorBackgroundLight = UIColor(red: 0.45, green: 0.31, blue: 0.64, alpha: 1.00)
     private let colorBackgroundDark = UIColor(red: 0.15, green: 0.18, blue: 0.46, alpha: 1.00)
@@ -50,6 +52,7 @@ class QuizViewController: UIViewController {
         
         currentQuestionNumber = 0
         correctlyAnswered = 0
+        startTime = DispatchTime.now().uptimeNanoseconds
         
         buildViews()
     }
@@ -133,7 +136,11 @@ class QuizViewController: UIViewController {
     
     func updateQuestionNumberLabel(index: Int) {
         if index > quiz.questions.count {
-            let qrvc = QuizResultViewController(correct: correctlyAnswered, total: quiz.questions.count)
+            let currentTime = DispatchTime.now().uptimeNanoseconds
+            let totalElapsedTimeNanoseconds = currentTime - startTime
+            let totalElapsedTimeSeconds: Double = Double(totalElapsedTimeNanoseconds / 1000000000).rounded(.down)
+            print(totalElapsedTimeSeconds)
+            let qrvc = QuizResultViewController(quizId: quiz.id, correct: correctlyAnswered, total: quiz.questions.count, time: totalElapsedTimeSeconds)
             self.navigationController?.pushViewController(qrvc, animated: true)
         } else {
             currentQuestionNumber = index
