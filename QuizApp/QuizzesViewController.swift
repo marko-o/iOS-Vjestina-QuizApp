@@ -219,12 +219,12 @@ class QuizzesViewController: UIViewController {
         quizlistContainer.isHidden = false
     }
     
-    func handleResponseQuizzes(quizzes: [Quiz]?, err: RequestError?) -> Void {
+    func handleResponseQuizzes(quizzes: [Quiz]?, err: RequestError?) {
         
         getQuizButton.isEnabled = true
         
         guard err == nil else {
-            print(err)
+            print(err!)
             return
         }
         
@@ -248,10 +248,10 @@ class QuizzesViewController: UIViewController {
         
         getQuizButton.isEnabled = false
         
-        let url = URL(string: "https://iosquiz.herokuapp.com/api/quizzes")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        ns.executeGetQuizzesRequest(request, completionHandler: self.handleResponseQuizzes)
+        ns.executeGetQuizzesRequest(completionHandler: { [weak self]
+            quizzes, err in
+            self?.handleResponseQuizzes(quizzes: quizzes, err: err)
+        })
     }
     
     private func getOccurencesInQuizQuestions(string: String) -> Int {
@@ -407,19 +407,5 @@ class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
     override func invalidateLayout() {
         super.invalidateLayout()
         self.configLayout()
-    }
-}
-
-extension UIImageView {
-    func load(url: URL) {
-        DispatchQueue.global().async { [weak self] in
-            if let data = try? Data(contentsOf: url) {
-                if let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self?.image = image
-                    }
-                }
-            }
-        }
     }
 }

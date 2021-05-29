@@ -12,6 +12,8 @@ import PureLayout
 
 class QuizResultViewController: UIViewController {
     
+    private var result: QuizResultInfo!
+    
     private var container: UIView!
     private var gradientLayer: CAGradientLayer!
     private var quizId: Int!
@@ -28,11 +30,8 @@ class QuizResultViewController: UIViewController {
     private let colorButtonText = UIColor(red: 0.39, green: 0.16, blue: 0.87, alpha: 1.00)
     private let buttonFont = UIFont(name: "SourceSansPro-Bold", size: 16.0)
     
-    init(quizId: Int, correct: Int, total: Int, time: Double) {
-        self.quizId = quizId
-        self.correct = correct
-        self.total = total
-        self.time = time
+    init(result: QuizResultInfo) {
+        self.result = result
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -57,7 +56,7 @@ class QuizResultViewController: UIViewController {
         
         resultLabel = UILabel()
         container.addSubview(resultLabel)
-        resultLabel.text = String(correct) + "/" + String(total)
+        resultLabel.text = String(result.correct) + "/" + String(result.total)
         resultLabel.font = UIFont(name: "SourceSansPro-Bold", size: 88.0)
         resultLabel.textColor = .white
         resultLabel.autoAlignAxis(toSuperviewAxis: .vertical)
@@ -101,30 +100,26 @@ class QuizResultViewController: UIViewController {
     
     func handleResponse(response: QuizResultsUploadResponse?, err: RequestError?) -> Void {
         if err != nil {
-            print(err)
+            print(err!)
         }
     }
     
     func uploadResults(token: String, results: QuizResults) {
-        let url = URL(string: "https://iosquiz.herokuapp.com/api/result")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue(token, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
         let quizJSON = try! JSONEncoder().encode(results)
-        
-        ns.executeQuizResultsUploadRequest(request, bodyData: quizJSON, completionHandler: self.handleResponse(response:err:))
+        ns.executeQuizResultsUploadRequest(token: token, bodyData: quizJSON, completionHandler: { [weak self]
+            response, err in
+            self?.handleResponse(response: response, err: err)
+        })
     }
     
     @objc func finished(_: UIButton) {
         let defaults = UserDefaults.standard
-        guard let credentialsEncoded = defaults.object(forKey: "credentials") as! Data? else {
+        guard let credentialsEncoded = defaults.object(forKey: "credentials") as? Data else {
             return
         }
         let credentials = try! JSONDecoder().decode(LoginCredentials.self, from: credentialsEncoded)
         
-        let results = QuizResults(quizId: quizId, userId: credentials.id, time: time, noOfCorrect: correct)
+        let results = QuizResults(quizId: result.quizId, userId: credentials.id, time: result.time, noOfCorrect: result.correct)
         
         uploadResults(token: credentials.token, results: results)
         self.navigationController?.isNavigationBarHidden = false

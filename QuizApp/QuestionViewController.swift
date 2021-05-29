@@ -82,7 +82,7 @@ class QuestionViewController: UIViewController {
         questionLabel.textColor = .white
         questionLabel.font = UIFont(name: "SourceSansPro-Bold", size: 24.0)
         questionLabel.lineBreakMode = .byWordWrapping
-        questionLabel.numberOfLines = 2
+        questionLabel.numberOfLines = 0
         for button in answerButtons {
             button.backgroundColor = UIColor(white: 1.0, alpha: 0.3)
             button.layer.cornerRadius = 28

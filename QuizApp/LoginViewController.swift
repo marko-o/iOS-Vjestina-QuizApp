@@ -27,7 +27,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     private var errorLabel: UILabel!
     
     private var monitor: NWPathMonitor!
-    private var ns: NetworkService!
+    private var ns: NetworkServiceProtocol!
     
     private var email: String!
     private var password: String!
@@ -64,15 +64,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
          self.navigationController?.navigationBar.isTranslucent = true
         
         monitor = NWPathMonitor()
-        monitor.pathUpdateHandler = {
+        monitor.pathUpdateHandler = { [weak self]
             path in
             if path.status == .unsatisfied {
                 DispatchQueue.main.async {
-                    self.errorLabel.text = "Network currently unavailable"
+                    self?.errorLabel.text = "Network currently unavailable"
                 }
             } else {
                 DispatchQueue.main.async {
-                    self.errorLabel.text = ""
+                    self?.errorLabel.text = ""
                 }
             }
         }
@@ -329,23 +329,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         email = email.trimmingCharacters(in: CharacterSet.newlines)
         password = password.trimmingCharacters(in: CharacterSet.newlines)
         
-        //check network connectivity
-//        let cp = monitor.currentPath
-//        if cp.status == .unsatisfied {
-//            self.errorLabel.text = "Network currently unavailable"
-//            return
-//        }
-        
-        let url = URL(string: "https://iosquiz.herokuapp.com/api/session")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let loginJSON: [String: String] = [
             "username": email,
             "password": password
         ]
         let loginData = try! JSONSerialization.data(withJSONObject: loginJSON)
-        ns.executeLoginRequest(request, bodyData: loginData, completionHandler: self.handleResponse)
+        ns.executeLoginRequest(bodyData: loginData, completionHandler: { [weak self]
+            credentials, err in
+            self?.handleResponse(credentials: credentials, err: err)
+        })
     }
     
     private func loadTabBarController() {

@@ -10,7 +10,12 @@ import Foundation
 
 class NetworkService: NetworkServiceProtocol {
     
-    func executeLoginRequest(_ request: URLRequest, bodyData: Data, completionHandler: @escaping (LoginCredentials?, RequestError?) -> Void) {
+    func executeLoginRequest(bodyData: Data, completionHandler: @escaping (LoginCredentials?, RequestError?) -> Void) {
+        let url = URL(string: "https://iosquiz.herokuapp.com/api/session")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
         let task = URLSession.shared.uploadTask(with: request, from: bodyData) {
             data, response, err in
             guard err == nil else {
@@ -53,7 +58,11 @@ class NetworkService: NetworkServiceProtocol {
         task.resume()
     }
     
-    func executeGetQuizzesRequest(_ request: URLRequest, completionHandler: @escaping ([Quiz]?, RequestError?) -> Void) {
+    func executeGetQuizzesRequest(completionHandler: @escaping ([Quiz]?, RequestError?) -> Void) {
+        let url = URL(string: "https://iosquiz.herokuapp.com/api/quizzes")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
         let task = URLSession.shared.dataTask(with: request) {
             data, response, err in
             guard err == nil else {
@@ -96,7 +105,13 @@ class NetworkService: NetworkServiceProtocol {
         task.resume()
     }
     
-    func executeQuizResultsUploadRequest(_ request: URLRequest, bodyData: Data, completionHandler: @escaping (QuizResultsUploadResponse?, RequestError?) -> Void) {
+    func executeQuizResultsUploadRequest(token: String, bodyData: Data, completionHandler: @escaping (QuizResultsUploadResponse?, RequestError?) -> Void) {
+        let url = URL(string: "https://iosquiz.herokuapp.com/api/result")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
         let task = URLSession.shared.uploadTask(with: request, from: bodyData) {
             data, response, err in
             guard err == nil else {
@@ -105,18 +120,6 @@ class NetworkService: NetworkServiceProtocol {
                 }
                 return
             }
-            
-            //var serverResponse: ServerResponse
-            
-            //            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode)
-            //                else {
-            //                    DispatchQueue.main.async {
-            //                        completionHandler(.ok, .serverError)
-            //
-            //                    }
-            //                    return
-            //
-            //            }
             
             let httpResponse = response as? HTTPURLResponse
             if httpResponse != nil {
@@ -136,8 +139,8 @@ class NetworkService: NetworkServiceProtocol {
                         serverResponse = .forbidden
                     case 404:
                         serverResponse = .notFound
-                    case _:
-                        serverResponse = nil
+                    default:
+                        serverResponse = .unknownResponse(statusCode: httpResponse!.statusCode)
                     }
                 }
                 let res = QuizResultsUploadResponse(response: serverResponse)
@@ -150,71 +153,15 @@ class NetworkService: NetworkServiceProtocol {
                 }
             }
             
-            guard let data = data else {
+            guard data != nil else {
                 DispatchQueue.main.async {
                     completionHandler(nil, .noDataError)
                 }
                 return
             }
             
-            guard let value = try? JSONDecoder().decode(QuizResultsUploadResponse.self, from: data) else {
-                DispatchQueue.main.async {
-                    completionHandler(nil, .decodingError)
-                }
-                return
-                
-            }
-            
-            DispatchQueue.main.async {
-                completionHandler(value, nil)
-            }
-            
-            
         }
         task.resume()
     }
-    
-//    func executeURLRequest(_ request: URLRequest, completionHandler: @escaping (String?, RequestError?) -> Void) {
-//        let dataTask = URLSession.shared.dataTask(with: request) {
-//            data, response, err in
-//            guard err != nil else {
-//                DispatchQueue.main.async {
-//                    completionHandler(nil, .clientError)
-//                }
-//                return
-//            }
-//
-//            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode)
-//                else {
-//                    DispatchQueue.main.async {
-//                        completionHandler(nil, .serverError)
-//
-//                    }
-//                    return
-//
-//            }
-//            guard let data = data else {
-//                DispatchQueue.main.async {
-//                    completionHandler(nil, .noDataError)
-//                }
-//                return
-//
-//            }
-//
-//            guard let value = try?JSONDecoder().decode(ServerResponse.self,from: data) else {
-//                DispatchQueue.main.async {
-//                    completionHandler(nil, .decodingError)
-//                }
-//                return
-//
-//            }
-//            
-//            DispatchQueue.main.async {
-//                completionHandler(value, nil)
-//            }
-//        }
-//
-//        dataTask.resume()
-//    }
     
 }

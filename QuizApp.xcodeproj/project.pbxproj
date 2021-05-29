@@ -12,6 +12,8 @@
 		524EBD0226456C35009B6227 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524EBD0126456C35009B6227 /* SettingsViewController.swift */; };
 		524EBD0826459656009B6227 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524EBD0726459656009B6227 /* CustomTabBarController.swift */; };
 		52800B762622629100C3B6DD /* QuizHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52800B752622629100C3B6DD /* QuizHeaderView.swift */; };
+		528274D62662DAC800D57C2E /* ImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528274D52662DAC800D57C2E /* ImageViewExtension.swift */; };
+		528274D82662DB8100D57C2E /* QuizResultInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528274D72662DB8100D57C2E /* QuizResultInfo.swift */; };
 		529B38DD261F8BCB00266A6D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529B38DC261F8BCB00266A6D /* AppDelegate.swift */; };
 		529B38DF261F8BCB00266A6D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529B38DE261F8BCB00266A6D /* SceneDelegate.swift */; };
 		529B38E1261F8BCB00266A6D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529B38E0261F8BCB00266A6D /* ViewController.swift */; };
@@ -56,6 +58,8 @@
 		524EBD0126456C35009B6227 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		524EBD0726459656009B6227 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		52800B752622629100C3B6DD /* QuizHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizHeaderView.swift; sourceTree = "<group>"; };
+		528274D52662DAC800D57C2E /* ImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewExtension.swift; sourceTree = "<group>"; };
+		528274D72662DB8100D57C2E /* QuizResultInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultInfo.swift; sourceTree = "<group>"; };
 		529B38D9261F8BCB00266A6D /* QuizApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		529B38DC261F8BCB00266A6D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		529B38DE261F8BCB00266A6D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -164,6 +168,8 @@
 				52AA52042650271400075503 /* QuizPageViewControllerDelegate.swift */,
 				52AA520626504F7900075503 /* CustomScrollView.swift */,
 				52AA521C2651F5F400075503 /* ConnectionErrorView.swift */,
+				528274D52662DAC800D57C2E /* ImageViewExtension.swift */,
+				528274D72662DB8100D57C2E /* QuizResultInfo.swift */,
 			);
 			path = QuizApp;
 			sourceTree = "<group>";
@@ -350,6 +356,7 @@
 				52AA52152651B95200075503 /* QuizResults.swift in Sources */,
 				52AA521D2651F5F400075503 /* ConnectionErrorView.swift in Sources */,
 				524EBD0226456C35009B6227 /* SettingsViewController.swift in Sources */,
+				528274D82662DB8100D57C2E /* QuizResultInfo.swift in Sources */,
 				52AC920A262131A9001C8C81 /* QuizzesViewCell.swift in Sources */,
 				52AA521126519A5900075503 /* LoginCredentials.swift in Sources */,
 				529B38E1261F8BCB00266A6D /* ViewController.swift in Sources */,
@@ -361,6 +368,7 @@
 				52AC920826210B03001C8C81 /* QuizzesViewController.swift in Sources */,
 				52AC92062620CBC7001C8C81 /* DataServiceProtocol.swift in Sources */,
 				529B38DF261F8BCB00266A6D /* SceneDelegate.swift in Sources */,
+				528274D62662DAC800D57C2E /* ImageViewExtension.swift in Sources */,
 				52AA52172651BC5500075503 /* ServerResponse.swift in Sources */,
 				52AA52132651ADF600075503 /* QuizzesResult.swift in Sources */,
 				52800B762622629100C3B6DD /* QuizHeaderView.swift in Sources */,

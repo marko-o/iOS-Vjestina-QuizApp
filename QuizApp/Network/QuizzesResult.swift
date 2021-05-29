@@ -8,8 +8,4 @@
 
 struct QuizzesResult: Codable {
     let quizzes: [Quiz]
-    
-    enum CodingKeys: String, CodingKey {
-        case quizzes
-    }
 }

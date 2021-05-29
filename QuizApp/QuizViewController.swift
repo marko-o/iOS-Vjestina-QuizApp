@@ -140,7 +140,8 @@ class QuizViewController: UIViewController {
             let totalElapsedTimeNanoseconds = currentTime - startTime
             let totalElapsedTimeSeconds: Double = Double(totalElapsedTimeNanoseconds / 1000000000).rounded(.down)
             print(totalElapsedTimeSeconds)
-            let qrvc = QuizResultViewController(quizId: quiz.id, correct: correctlyAnswered, total: quiz.questions.count, time: totalElapsedTimeSeconds)
+            let resultInfo = QuizResultInfo(quizId: quiz.id, correct: correctlyAnswered, total: quiz.questions.count, time: totalElapsedTimeSeconds)
+            let qrvc = QuizResultViewController(result: resultInfo)
             self.navigationController?.pushViewController(qrvc, animated: true)
         } else {
             currentQuestionNumber = index

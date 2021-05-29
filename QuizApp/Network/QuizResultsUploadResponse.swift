@@ -6,10 +6,6 @@
 //  Copyright © 2021 five. All rights reserved.
 //
 
-struct QuizResultsUploadResponse: Codable {
+struct QuizResultsUploadResponse {
     let response: ServerResponse?
-    
-    enum CodingKeys: String, CodingKey {
-        case response
-    }
 }

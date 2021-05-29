@@ -10,9 +10,9 @@ import Foundation
 
 protocol NetworkServiceProtocol {
     
-    func executeLoginRequest(_ request: URLRequest, bodyData: Data, completionHandler: @escaping (LoginCredentials?, RequestError?) -> Void)
+    func executeLoginRequest(bodyData: Data, completionHandler: @escaping (LoginCredentials?, RequestError?) -> Void)
     
-    func executeGetQuizzesRequest(_ request: URLRequest, completionHandler: @escaping ([Quiz]?, RequestError?) -> Void)
+    func executeGetQuizzesRequest(completionHandler: @escaping ([Quiz]?, RequestError?) -> Void)
     
-    func executeQuizResultsUploadRequest(_ request: URLRequest, bodyData: Data, completionHandler: @escaping (QuizResultsUploadResponse?, RequestError?) -> Void)
+    func executeQuizResultsUploadRequest(token: String, bodyData: Data, completionHandler: @escaping (QuizResultsUploadResponse?, RequestError?) -> Void)
 }
