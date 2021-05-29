@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PureLayout
+import Network
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
@@ -25,7 +26,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     private var submitButton: UIButton!
     private var errorLabel: UILabel!
     
-    private var ds: DataService!
+    private var monitor: NWPathMonitor!
+    private var ns: NetworkServiceProtocol!
     
     private var email: String!
     private var password: String!
@@ -61,7 +63,23 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
          self.navigationController?.navigationBar.shadowImage = UIImage()
          self.navigationController?.navigationBar.isTranslucent = true
         
-        ds = DataService()
+        monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self]
+            path in
+            if path.status == .unsatisfied {
+                DispatchQueue.main.async {
+                    self?.errorLabel.text = "Network currently unavailable"
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.errorLabel.text = ""
+                }
+            }
+        }
+        let queue = DispatchQueue(label: "Monitor")
+        monitor.start(queue: queue)
+        
+        ns = NetworkService()
         email = ""
         password = ""
          
@@ -184,7 +202,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         fieldContainer.autoSetDimension(.height, toSize: 300)
         fieldContainer.autoPinEdge(toSuperviewEdge: .leading)
         fieldContainer.autoPinEdge(toSuperviewEdge: .trailing)
-        fieldContainer.autoPinEdge(toSuperviewEdge: .bottom, withInset: 40)
+        fieldContainer.autoPinEdge(toSuperviewEdge: .bottom)
 
         emailField.autoPinEdge(toSuperviewEdge: .top)
         emailField.autoPinEdge(toSuperviewEdge: .bottom)
@@ -208,7 +226,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
         submitButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 30)
         submitButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 30)
-        submitButton.autoPinEdge(.bottom, to: .bottom, of: fieldContainer)
+        submitButton.autoPinEdge(.bottom, to: .bottom, of: fieldContainer, withOffset: -40)
         submitButton.autoSetDimension(.height, toSize: 44)
 
         titleLabel.autoAlignAxis(toSuperviewAxis: .vertical)
@@ -277,10 +295,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return .lightContent
     }
     
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        return .portrait
-//    }
-    
     //Toggle password visibility button target
     @objc func togglePasswordVisibility(_: UIButton) {
         passwordField.togglePasswordVisibility()
@@ -293,26 +307,37 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    func handleResponse(credentials: LoginCredentials?, err: RequestError?) -> Void {
+        guard err == nil else {
+            //handle error
+            self.errorLabel.text = "Incorrect username and/or password"
+            return
+        }
+    
+        //login was successful
+        let defaults = UserDefaults.standard
+        let credentialsEncoded = try? JSONEncoder().encode(credentials)
+        defaults.set(credentialsEncoded, forKey: "credentials")
+    
+        self.loadTabBarController()
+    }
+    
     //Login button target
     @objc func submit(_: UIButton) {
-        var status: LoginStatus!
+        submitButton.isEnabled = false
+        
         email = email.trimmingCharacters(in: CharacterSet.newlines)
         password = password.trimmingCharacters(in: CharacterSet.newlines)
-        status = ds.login(email: email, password: password)
-        print("\n-------- Login information --------")
-        switch status {
-        case .success:
-            print("SUCCESS")
-            loadTabBarController()
-        case .error(let errcode, let errmsg):
-            errorLabel.text = "Incorrect username and/or password"
-            print("ERROR (" + String(errcode) + "): " + errmsg)
-        case .none:
-            print("noinfo")
-        }
-        print("username: \"" + email + "\"")
-        print("password: \"" + password + "\"")
-        print("--------------- END ---------------")
+        
+        let loginJSON: [String: String] = [
+            "username": email,
+            "password": password
+        ]
+        let loginData = try! JSONSerialization.data(withJSONObject: loginJSON)
+        ns.executeLoginRequest(bodyData: loginData, completionHandler: { [weak self]
+            credentials, err in
+            self?.handleResponse(credentials: credentials, err: err)
+        })
     }
     
     private func loadTabBarController() {

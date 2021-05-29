@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import PureLayout
+import Network
 
 class QuizzesViewController: UIViewController {
     
@@ -17,13 +18,15 @@ class QuizzesViewController: UIViewController {
     private var quizlistCollectionView: UICollectionView!
     private var gradientLayer: CAGradientLayer!
     
-    private var ds: DataService!
+    private var monitor: NWPathMonitor!
+    private var ns: NetworkService!
     
     private var titleLabel: UILabel!
     private var getQuizButton: UIButton!
     private var funFactImageView: UIImageView!
     private var funFactLabel: UILabel!
     private var funFactBody: UILabel!
+    private var connectionErrorView: ConnectionErrorView!
     
     private var quizlist: [Quiz]!
     private var quizlistByCategory: [Int: [Quiz]]!
@@ -51,12 +54,11 @@ class QuizzesViewController: UIViewController {
         //set only arrow as back button
         self.parent!.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         
-        //set back button color
-        self.parent!.navigationController?.navigationBar.tintColor = .white
-        // set light status bar contents
-        self.parent!.navigationController?.navigationBar.barStyle = .black
-
-        ds = DataService()
+        monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "Monitor")
+        monitor.start(queue: queue)
+        
+        ns = NetworkService()
         quizlist = [Quiz]()
         quizlistByCategory = [Int: [Quiz]]()
         buildViews()
@@ -78,20 +80,16 @@ class QuizzesViewController: UIViewController {
         super.viewWillAppear(animated)
         self.navigationItem.titleView = titleLabel
     }
-
+    
     private func reloadCollectionViewLayout(_ width: CGFloat) {
         self.collectionViewFlowLayout.containerWidth = width
         self.collectionViewFlowLayout.display = self.view.traitCollection.horizontalSizeClass == .compact && self.view.traitCollection.verticalSizeClass == .regular ? CollectionDisplay.list : CollectionDisplay.grid(columns: 2)
-
-        }
+        
+    }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        return .portrait
-//    }
     
     private func buildViews() {
         createViews()
@@ -144,6 +142,10 @@ class QuizzesViewController: UIViewController {
         quizlistCollectionView.register(QuizzesViewCell.self, forCellWithReuseIdentifier: "QuizCell")
         quizlistCollectionView.register(QuizHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(QuizHeaderView.self)")  // UICollectionReusableView
         quizlistContainer.addSubview(quizlistCollectionView)
+        
+        connectionErrorView = ConnectionErrorView()
+        connectionErrorView.isHidden = true
+        container.addSubview(connectionErrorView)
     }
     
     private func styleViews() {
@@ -168,38 +170,40 @@ class QuizzesViewController: UIViewController {
     
     private func defineLayoutForViews() {
         container.autoPinEdgesToSuperviewEdges()
-
+        
         quizlistContainer.autoPinEdge(.top, to: .bottom, of: getQuizButton, withOffset: 28)
         quizlistContainer.autoPinEdge(toSuperviewEdge: .bottom)
         quizlistContainer.autoPinEdge(toSuperviewEdge: .leading)
         quizlistContainer.autoPinEdge(toSuperviewEdge: .trailing)
-
+        
         quizlistCollectionView.autoPinEdge(.top, to: .bottom, of: funFactBody, withOffset: 10)
         quizlistCollectionView.autoPinEdge(toSuperviewEdge: .bottom)
         quizlistCollectionView.autoPinEdge(toSuperviewEdge: .leading)
         quizlistCollectionView.autoPinEdge(toSuperviewEdge: .trailing)
-
+        
         getQuizButton.autoPinEdge(toSuperviewSafeArea: .top, withInset: 14)
         getQuizButton.autoSetDimension(.height, toSize: 44)
         getQuizButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 30)
         getQuizButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 30)
-
+        
         funFactImageView.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
         funFactImageView.autoPinEdge(toSuperviewEdge: .leading, withInset: 24)
         funFactImageView.autoSetDimensions(to: CGSize(width: 28, height: 28))
-
+        
         funFactLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
         funFactLabel.autoPinEdge(.leading, to: .trailing, of: funFactImageView, withOffset: 10)
-
+        
         funFactBody.autoPinEdge(.top, to: .bottom, of: funFactLabel, withOffset: 10)
         funFactBody.autoPinEdge(toSuperviewEdge: .leading, withInset: 24)
         funFactBody.autoPinEdge(toSuperviewEdge: .trailing, withInset: 24)
+        
+        connectionErrorView.autoAlignAxis(toSuperviewAxis: .vertical)
+        connectionErrorView.autoAlignAxis(toSuperviewAxis: .horizontal)
+        connectionErrorView.autoSetDimensions(to: CGSize(width: 200, height: 200))
     }
     
-    // getQuizButton target
-    @objc func getQuiz(_: UIButton) {
-        quizlistContainer.isHidden = false
-        quizlist = ds.fetchQuizes()
+    func loadQuizzesData(quizzes: [Quiz]) {
+        quizlist = quizzes
         quizlistByCategory = distributeByCategory(list: quizlist)
         quizlistCollectionView?.dataSource = self
         self.quizlistCollectionView.performBatchUpdates({
@@ -212,6 +216,42 @@ class QuizzesViewController: UIViewController {
         """
         There are \(String(occurences)) questions that contain the word "NBA".
         """
+        quizlistContainer.isHidden = false
+    }
+    
+    func handleResponseQuizzes(quizzes: [Quiz]?, err: RequestError?) {
+        
+        getQuizButton.isEnabled = true
+        
+        guard err == nil else {
+            print(err!)
+            return
+        }
+        
+        //success
+        if quizzes != nil {
+            loadQuizzesData(quizzes: quizzes!)
+        }
+    }
+    
+    // getQuizButton target
+    @objc func getQuiz(_: UIButton) {
+        //check network connectivity
+        let cp = monitor.currentPath
+        if cp.status == .unsatisfied {
+            connectionErrorView.isHidden = false
+            quizlistContainer.isHidden = true
+        } else {
+            connectionErrorView.isHidden = true
+            quizlistContainer.isHidden = false
+        }
+        
+        getQuizButton.isEnabled = false
+        
+        ns.executeGetQuizzesRequest(completionHandler: { [weak self]
+            quizzes, err in
+            self?.handleResponseQuizzes(quizzes: quizzes, err: err)
+        })
     }
     
     private func getOccurencesInQuizQuestions(string: String) -> Int {
@@ -263,28 +303,14 @@ extension QuizzesViewController: UICollectionViewDataSource {
         
         cell.quizTitle.text = currentQuiz.title
         cell.quizDescription.text = currentQuiz.description
-        
-        //determine which thumbnail to show, a bit crude but temporary
-        var image: UIImage!
-        image = UIImage(named: "quiz-sport-intermediate")
-        let str = cell.quizTitle.text
-        if (str?.contains("Basic"))! {
-            if (str?.contains("sport"))! {
-                image = UIImage(named: "quiz-sport-basic")
-            } else if (str?.contains("science"))! {
-                image = UIImage(named: "quiz-science-basic")
-            }
-        } else {
-            image = UIImage(named: "quiz-sport-intermediate")
-        }
-        cell.thumbnail.image = image
+        cell.thumbnail.load(url: URL(string: currentQuiz.imageUrl)!)
         cell.setLevel(level: currentQuiz.level)
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
+        
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "\(QuizHeaderView.self)", for: indexPath) as! QuizHeaderView
@@ -365,19 +391,19 @@ class CustomCollectionViewFlowLayout: UICollectionViewFlowLayout {
         case .inline:
             self.scrollDirection = .vertical
             self.itemSize = CGSize(width: containerWidth, height: 143)
-        
+            
         case .grid(let column):
             self.scrollDirection = .vertical
             let spacing = CGFloat(column - 1) * minimumLineSpacing
             let optimisedWidth = (containerWidth - spacing) / CGFloat(column)
             self.itemSize = CGSize(width: optimisedWidth , height: 143) // keep as square
-
+            
         case .list:
             self.scrollDirection = .vertical
             self.itemSize = CGSize(width: containerWidth, height: 143)
         }
     }
-
+    
     override func invalidateLayout() {
         super.invalidateLayout()
         self.configLayout()
